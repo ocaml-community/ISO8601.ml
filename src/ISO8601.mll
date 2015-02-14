@@ -71,4 +71,22 @@ and time = parse
 | hour
   {}
 
+and timezone = parse
+
+(* Z *)
+| 'Z'
+  {}
+
+(* ±hh:mm *)
+| ['+''-'] hour ':' minute
+  {}
+
+(* ±hhmm *)
+| ['+''-'] hour minute
+  {}
+
+(* ±hh *)
+| ['+''-'] hour
+  {}
+
 {}
