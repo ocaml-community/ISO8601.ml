@@ -1,0 +1,5 @@
+name ="ISO8601"
+version ="0.1.0"
+description ="ISO 8601 parsing."
+archive(byte) ="ISO8601.cma"
+archive(native) ="ISO8601.cmxa"
