@@ -19,70 +19,47 @@ let year_day = (['0'-'2'] num num) | ('3' (['0'-'5'] num | '6' ['0'-'6']))
 
 rule date = parse
 
-(* YYYY *)
-| year
-  {}
-
-(* ±YYYYY *)
-| year_ext
-  {}
-
-(* YYYYMMDD *)
-| year month day
-  {}
-
-(* YYYY-MM-DD *)
-| year '-' month '-' day
+(* YYYY / ±YYYYY *)
+| (year | year_ext) as y
   {}
 
 (* YYYY-MM *)
-| year '-' month
+| (year as y) '-' (month as m)
   {}
 
-(* YYYY-Www *)
-| year "-W" week
+(* YYYYMMDD / YYYY-MM-DD *)
+| ((year as y) (month as m) (day as d))
+| ((year as y) '-' (month as m) '-' (day as d))
   {}
 
-(* YYYYWww *)
-| year 'W' week
+(* YYYYWww / YYYY-Www *)
+| (year as y) 'W' (week as w)
+| (year as y) "-W" (week as w)
   {}
 
-(* YYYY-Www-D *)
-| year '-' 'W' week '-' week_day
+(* YYYYWwwD / YYYY-Www-D *)
+| (year as y) 'W' (week as w) (week_day as d)
+| (year as y) '-' 'W' (week as w) '-' (week_day as d)
   {}
 
-(* YYYYWwwD *)
-| year 'W' week week_day
-  {}
-
-(* YYYY-DDD *)
-| year '-' year_day
-  {}
-
-(* YYYYDDD *)
-| year year_day
+(* YYYYDDD / YYYY-DDD *)
+| (year as y) (year_day as d)
+| (year as y) '-' (year_day as d)
   {}
 
 and time = parse
 
-(* hh:mm:ss *)
-| hour ':' minute ':' second
+(* hhmmss / hh:mm:ss *)
+| (hour as h) (minute as m) (second as s)
+| (hour as h) ':' (minute as m) ':' (second as s)
   {}
 
-(* hhmmss *)
-| hour minute second
-  {}
-
-(* hh:mm *)
-| hour ':' minute
-  {}
-
-(* hhmm *)
-| hour minute
+(* hhmm / hh:mm *)
+| (hour as h) ':'? (minute as m)
   {}
 
 (* hh *)
-| hour
+| hour as h
   {}
 
 and timezone = parse
@@ -91,16 +68,12 @@ and timezone = parse
 | 'Z'
   {}
 
-(* ±hh:mm *)
-| ['+''-'] hour ':' minute
-  {}
-
-(* ±hhmm *)
-| ['+''-'] hour minute
+(* ±hhmm / ±hh:mm *)
+| (['+''-'] as sign) (hour as h) ':'? (minute as m)
   {}
 
 (* ±hh *)
-| ['+''-'] hour
+| (['+''-'] as sign) (hour as h)
   {}
 
 {}
