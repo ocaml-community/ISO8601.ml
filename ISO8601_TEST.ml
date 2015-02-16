@@ -24,6 +24,7 @@ let _ =
             date "2009-123" (t ~y:2009 ~m:5 ~d:3);
             date "2009-222" (t ~y:2009 ~m:8 ~d:10);
             date "2009-139" (t ~y:2009 ~m:5 ~d:19);
+            date "2012-060" (t ~y:2012 ~m:2 ~d:29); (* leap year *)
           ] ;
     OUnit2.(>:::) "[TIME WITHOUT TIMEZONE]"
           [
