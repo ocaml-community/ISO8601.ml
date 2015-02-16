@@ -29,7 +29,18 @@
   let ym y m = ymd_hms_hm ~y:(int y) ~m:(int m) ()
   let y x = ymd_hms_hm ~y:(int x) ()
 
+  let hms h m s =
+    ymd_hms_hm ~h:(int h) ~mi:(int m) ()
+    +. float_of_string s
+
+  let hm h m = ymd_hms_hm ~h:(int h) ~mi:(int m) ()
+  let h x = ymd_hms_hm ~h:(int x) ()
+
+  let z = 0.
+
   let yd y d = ymd_hms_hm ~y:(int y) ~d:(int d) ()
+
+  let sign s = if s = '-' then fun x -> "-" ^ x else fun x -> x
 
 }
 
@@ -44,7 +55,7 @@ let week = ('0'num) | (['1'-'4']num) | ('5'['0'-'3'])
 let week_day = ['1'-'7']
 let hour = (['0'-'1']num) | ('2'['0'-'4'])
 let minute = (['0'-'5']num)
-let second = (['0'-'5']num) | '6''0' ([',''.']num+)?
+let second = ((['0'-'5']num) | '6''0') ([',''.']num+)?
 let year_day = (['0'-'2'] num num) | ('3' (['0'-'5'] num | '6' ['0'-'6']))
 
 rule date = parse
@@ -82,28 +93,28 @@ and time = parse
 (* hhmmss / hh:mm:ss *)
 | (hour as h) (minute as m) (second as s)
 | (hour as h) ':' (minute as m) ':' (second as s)
-  {}
+  { hms h m s }
 
 (* hhmm / hh:mm *)
 | (hour as h) ':'? (minute as m)
-  {}
+  { hm h m }
 
 (* hh *)
-| hour as h
-  {}
+| hour as x
+  { h x }
 
 and timezone = parse
 
 (* Z *)
 | 'Z'
-  {}
+  { z }
 
 (* ±hhmm / ±hh:mm *)
-| (['+''-'] as sign) (hour as h) ':'? (minute as m)
-  {}
+| (['+''-'] as s) (hour as h) ':'? (minute as m)
+  { let s = sign s in hm (s h) (s m)  }
 
 (* ±hh *)
-| (['+''-'] as sign) (hour as h)
-  {}
+| (['+''-'] as s) (hour as x)
+  { h ((sign s) x) }
 
 {}
