@@ -15,7 +15,7 @@ export OPAMVERBOSE=1
 opam init
 
 git clone https://github.com/sagotch/ISO8601.ml.git
-opam pin add -k git -n ISO8601 ISO8601
+opam pin add -k git -n ISO8601 ISO8601.ml
 opam install ${OPAM_DEPENDS}
 
 eval `opam config env`
