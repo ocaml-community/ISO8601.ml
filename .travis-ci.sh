@@ -1,4 +1,4 @@
-OPAM_DEPENDS="ocamlfind ounit"
+OPAM_DEPENDS="ocamlfind ounit ISO8601"
 
 case "$OCAML_VERSION,$OPAM_VERSION" in
     4.01.0,1.2.0) ppa=avsm/ocaml41+opam12 ;;
