@@ -49,5 +49,14 @@ let _ =
             time "16.23334444" (mktime 16.23334444 0. 0.);
             time "16,2283" (mktime 16.2283 0. 0.);
           ] ;
+    OUnit2.(>:::) "[TIME WITH TIMEZONE]"
+          [
+            time "14:39:22-06:00" (mktime 8. 39. 22.) ;
+            time "14:39:22+0600" (mktime 20. 39. 22.);
+            time "14:39:22-01" (mktime 13. 39. 22.);
+            time "0545Z" (mktime 5. 45. 0.);
+            time "16:23:48,3-06:00" (mktime 10. 23. 48.3) ;
+            time "16:23.33+0600" (mktime 22. 23.33 0.) ;
+          ] ;
   ]
   |> List.map OUnit2.run_test_tt_main
