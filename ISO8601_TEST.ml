@@ -1,45 +1,53 @@
-let t = ISO8601.ymd_hms_hm
+let mkdate y m d =
+  { Unix.tm_sec = 0 ; tm_min = 0 ; tm_hour = 0 ;
+    tm_wday = -1 ; tm_yday = -1 ;tm_isdst = false ;
+    tm_mday = d ;
+    tm_mon = m - 1 ;
+    tm_year = y - 1900 ; }
+  |> Unix.mktime
+  |> fst
+
+let mktime h m s = h *. 3600. +. m *. 60. +. s
 
 let test fn input expected =
-  let expected = expected () in
-  let result = fn (Lexing.from_string input) in
-  let assert_equal = OUnit2.assert_equal ~printer:string_of_float in
+  let result = fn input in
+  let assert_equal = OUnit2.assert_equal
+                       ~cmp:(OUnit2.cmp_float ~epsilon:Pervasives.epsilon_float)
+                       ~printer:string_of_float in
   OUnit2.(>::) input (fun _ -> assert_equal expected result)
 
-let date =
-  test ISO8601.date
+let date = test ISO8601.date
 
-let time =
-  test ISO8601.time
+let time = test ISO8601.time
 
 let _ =
   [
     OUnit2.(>:::) "[DATE]"
           [
-            date "2009" (t ~y:2009) ;
-            date "2009-05-19" (t ~y:2009 ~m:5 ~d:19) ;
-            date "20090519" (t ~y:2009 ~m:5 ~d:19) ;
-            date "2009-05" (t ~y:2009 ~m:5) ;
-            date "2009-001" (t ~y:2009 ~m:1 ~d:1);
-            date "2009-123" (t ~y:2009 ~m:5 ~d:3);
-            date "2009-222" (t ~y:2009 ~m:8 ~d:10);
-            date "2009-139" (t ~y:2009 ~m:5 ~d:19);
-            date "2012-060" (t ~y:2012 ~m:2 ~d:29); (* leap year *)
+            date "2009" (mkdate 2009 1 1) ;
+            date "2009-05-19" (mkdate 2009 5 19) ;
+            date "20090519" (mkdate 2009 5 19) ;
+            date "2009-05" (mkdate 2009 5 1) ;
+            date "2009-001" (mkdate 2009 1 1);
+            date "2009-123" (mkdate 2009 5 3);
+            date "2009-222" (mkdate 2009 8 10);
+            date "2009-139" (mkdate 2009 5 19);
+            date "2012-060" (mkdate 2012 2 29); (* leap year *)
           ] ;
     OUnit2.(>:::) "[TIME WITHOUT TIMEZONE]"
           [
-            time "12:34" (t ~h:12 ~mi:34) ;
-            time "00:00" (t) ;
-            time "14" (t ~h:14) ;
-            time "14:31" (t ~h:14 ~mi:31) ;
-            time "14:39:22" (t ~h:14 ~mi:39 ~s:22) ;
-            time "24:00" (t ~h:24) ;
-            time "16:23:48.5" (fun () -> t ~h:16 ~mi:23 ~s:48 () +. 0.5) ;
-            time "16:23:48,444" (fun () -> t ~h:16 ~mi:23 ~s:48 () +. 0.444) ;
-            time "16:23.4" (fun () -> t ~h:16 ~mi:23 () +. 0.4 *. 60.) ;
-            time "16:23,25" (fun () -> t ~h:16 ~mi:23 () +. 0.25 *. 60. );
-            time "16.23334444" (fun () -> t ~h:16 () +. 0.23334444 *. 60. *. 60. );
-            time "16,2283" (fun () -> t ~h:16 () +. 0.2283 *. 60. *. 60. );
-          ]
+            time "12:34" (mktime 12. 34. 0.) ;
+            time "00:00" (mktime 0. 0. 0.) ;
+            time "14" (mktime 14. 0. 0.) ;
+            time "14:31" (mktime 14. 31. 0.) ;
+            time "14:39:22" (mktime 14. 39. 22.) ;
+            time "24:00" (mktime 24. 0. 0.) ;
+            time "16:23:48.5" (mktime 16. 23. 48.5) ;
+            time "16:23:48,444" (mktime 16. 23. 48.444) ;
+            time "16:23.4" (mktime 16. 23.4 0.) ;
+            time "16:23,25" (mktime 16. 23.25 0.);
+            time "16.23334444" (mktime 16.23334444 0. 0.);
+            time "16,2283" (mktime 16.2283 0. 0.);
+          ] ;
   ]
   |> List.map OUnit2.run_test_tt_main
