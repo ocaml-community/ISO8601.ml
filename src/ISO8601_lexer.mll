@@ -114,22 +114,3 @@ and timezone = parse
 | "" { None }
 
 and delim = parse 'T' | 't' | ' ' as d { Some d } | "" { None }
-
-{
-
-  let date_lex lexbuf = date lexbuf
-
-  let time_lex lexbuf =
-    let t = time lexbuf in
-    match timezone lexbuf with None -> t | Some o -> t +. o
-
-  let datetime_lex lexbuf =
-    let d = date lexbuf in
-    match delim lexbuf with
-    | Some _ -> d +. time lexbuf
-    | _        -> assert false
-
-  let date s = date_lex (Lexing.from_string s)
-  let time s = time_lex (Lexing.from_string s)
-  let datetime s = datetime_lex (Lexing.from_string s)
-}
