@@ -1,8 +1,7 @@
 {
 
-  (* Unix module says t0 is 1970-01-01T00:00:00  *)
-
-  (* Final unit required to use only optional arguments. *)
+  (* Unix module says t0 is 1970-01-01T00:00:00
+   * Final unit required to use only optional arguments. *)
   let ymd_hms_hm
         ?(y=1970) ?(m=1) ?(d=1)
         ?(h=0) ?(mi=0) ?(s=0)
@@ -111,14 +110,35 @@ and timezone = parse
 
 (* Z *)
 | 'Z'
-  { z }
+  { Some z }
 
 (* ±hhmm / ±hh:mm *)
 | (['+''-'] as s) (hour as h) ':'? (minute as m)
-  { let s = sign s in hm (s h) (s m) }
+  { let s = sign s in Some ( hm (s h) (s m) ) }
 
 (* ±hh *)
 | (['+''-'] as s) (hour as x)
-  { h ((sign s) x) }
+  { Some ( h ((sign s) x) ) }
 
-{}
+| "" { None }
+
+and delim = parse "T" { Some "T" } | "" { None }
+
+{
+
+  let date_lex lexbuf = date lexbuf
+
+  let time_lex lexbuf =
+    let t = time lexbuf in
+    match timezone lexbuf with None -> t | Some o -> t +. o
+
+  let datetime_lex lexbuf =
+    let d = date lexbuf in
+    match delim lexbuf with
+    | Some "T" -> d +. time lexbuf
+    | _        -> assert false
+
+  let date s = date_lex (Lexing.from_string s)
+  let time s = time_lex (Lexing.from_string s)
+  let datetime s = datetime_lex (Lexing.from_string s)
+}
