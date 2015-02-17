@@ -1,17 +1,14 @@
 {
 
-  (* Unix module says t0 is 1970-01-01T00:00:00
-   * Final unit required to use only optional arguments. *)
-  let ymd_hms_hm
-        ?(y=1970) ?(m=1) ?(d=1)
-        ?(h=0) ?(mi=0) ?(s=0)
-        ?(oh=0) ?(om=0)
-      : unit -> float =
-    fun () ->
+
+  let int = int_of_string
+
+  (* Date helpers *)
+  let mkdate y m d =
     {
-      Unix.tm_sec = s ;
-      tm_min = mi + om ;
-      tm_hour = h + oh ;
+      Unix.tm_sec = 0 ;
+      tm_min = 0 ;
+      tm_hour = 0 ;
       tm_mday = d ;
       tm_mon = m - 1 ;
       tm_year = y - 1900 ;
@@ -22,27 +19,21 @@
     |> Unix.mktime
     |> fst
 
-  let int = int_of_string
+  let ymd y m d = mkdate (int y) (int m) (int d)
+  let ym y m = mkdate (int y) (int m) 1
+  let y x = mkdate (int x) 1 1
+  let yd y d = mkdate (int y) 1 (int d)
 
-  let ymd y m d = ymd_hms_hm ~y:(int y) ~m:(int m) ~d:(int d) ()
-  let ym y m = ymd_hms_hm ~y:(int y) ~m:(int m) ()
-  let y x = ymd_hms_hm ~y:(int x) ()
-
-  let hms h m s = ymd_hms_hm ~h:(int h) ~mi:(int m) ~s:(int s) ()
-
-  let hm h m = ymd_hms_hm ~h:(int h) ~mi:(int m) ()
-  let h x = ymd_hms_hm ~h:(int x) ()
-
+  (* Time helpers *)
+  let mktime h m s = float_of_int (h * 3600 + m * 60 + s)
+  let hms h m s = mktime (int h) (int m) (int s)
+  let hm h m =  mktime (int h) (int m) 0
+  let h x =  mktime (int x) 0 0
   let z = 0.
-
-  let yd y d = ymd_hms_hm ~y:(int y) ~d:(int d) ()
-
   let sign s = if s = '-' then fun x -> "-" ^ x else fun x -> x
-
-  let frac f =
-    if f = ""
-    then 0.
-    else float_of_string ("." ^ (String.sub f 1 (String.length f - 1)))
+  let frac = function
+    | "" -> 0.
+    | f -> float_of_string ("." ^ (String.sub f 1 (String.length f - 1)))
 
 }
 
