@@ -100,7 +100,7 @@ and time = parse
 and timezone = parse
 
 (* Z *)
-| 'Z'
+| 'Z' | 'z'
   { Some z }
 
 (* ±hhmm / ±hh:mm *)
@@ -113,7 +113,7 @@ and timezone = parse
 
 | "" { None }
 
-and delim = parse "T" { Some "T" } | "" { None }
+and delim = parse 'T' | 't' | ' ' as d { Some d } | "" { None }
 
 {
 
@@ -126,7 +126,7 @@ and delim = parse "T" { Some "T" } | "" { None }
   let datetime_lex lexbuf =
     let d = date lexbuf in
     match delim lexbuf with
-    | Some "T" -> d +. time lexbuf
+    | Some _ -> d +. time lexbuf
     | _        -> assert false
 
   let date s = date_lex (Lexing.from_string s)
