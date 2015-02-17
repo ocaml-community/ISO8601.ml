@@ -16,9 +16,9 @@ let test fn input expected =
                        ~printer:string_of_float in
   OUnit2.(>::) input (fun _ -> assert_equal expected result)
 
-let date = test ISO8601.date
+let date = test ISO8601.Permissive.date
 
-let time = test ISO8601.time
+let time = test ISO8601.Permissive.time
 
 let _ =
   [
