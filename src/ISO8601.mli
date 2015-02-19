@@ -23,18 +23,17 @@ module Permissive : sig
      *)
 
     val date_lex : Lexing.lexbuf -> float
-    val time_lex : Lexing.lexbuf -> float
-    val datetime_lex : ?reqtime:bool -> Lexing.lexbuf -> float
+    val date : string -> float
 
     val time_tz_lex : Lexing.lexbuf -> (float * float option)
-    val datetime_tz_lex : ?reqtime:bool -> Lexing.lexbuf -> (float * float option)
-
-    val date : string -> float
-    val time : string -> float
-    val datetime : ?reqtime:bool -> string -> float
-
+    val time_lex : Lexing.lexbuf -> float
     val time_tz : string -> (float * float option)
+    val time : string -> float
+
+    val datetime_tz_lex : ?reqtime:bool -> Lexing.lexbuf -> (float * float option)
+    val datetime_lex : ?reqtime:bool -> Lexing.lexbuf -> float
     val datetime_tz : ?reqtime:bool -> string -> (float * float option)
+    val datetime : ?reqtime:bool -> string -> float
 
     (** {2 Printing functions}
 
@@ -56,11 +55,12 @@ module Permissive : sig
      *)
 
     val pp_date : Format.formatter -> float -> unit
-    val pp_time : ?tz:float option -> Format.formatter -> float -> unit
-    val pp_datetime : ?tz:float option -> Format.formatter -> float -> unit
-
     val string_of_date : float -> string
+
+    val pp_time : ?tz:float option -> Format.formatter -> float -> unit
     val string_of_time : ?tz:float option -> float -> string
+
+    val pp_datetime : ?tz:float option -> Format.formatter -> float -> unit
     val string_of_datetime : ?tz:float option -> float -> string
 
 end
