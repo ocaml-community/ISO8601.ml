@@ -16,6 +16,6 @@ build: [ make "build" ]
 
 install: [ make "install" ]
 
-remove: [ "ocamlfind" "remove" "ISO9601" ]
+remove: [ "ocamlfind" "remove" "ISO8601" ]
 
 depends: [ "ocamlfind" ]
