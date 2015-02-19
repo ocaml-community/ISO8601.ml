@@ -6,7 +6,7 @@ module Permissive = struct
 
     let time_lex lexbuf =
       let t = Lexer.time lexbuf in
-      match Lexer.timezone lexbuf with None -> t | Some o -> t +. o
+      match Lexer.timezone lexbuf with None -> t | Some o -> t -. o
 
     let datetime_lex ?(reqtime=true) lexbuf =
       let d = Lexer.date lexbuf in
