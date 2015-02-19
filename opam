@@ -8,8 +8,13 @@ maintainer: "ju.sagot@gmail.com"
 
 homepage: "http://github.com/sagotch/ISO8601.ml/"
 
-build: [ [ make "all" ]
-         [ make "install" ] ]
+doc: "http://sagotch.github.io/ISO8601.ml/"
+
+build-doc: [ make "doc" ]
+
+build: [ make "build" ]
+
+install: [ make "install" ]
 
 remove: [ "ocamlfind" "remove" "ISO9601" ]
 
