@@ -1,6 +1,4 @@
 {
-
-
   let int = int_of_string
 
   (* Date helpers *)
@@ -31,7 +29,6 @@
   let frac = function
     | "" -> 0.
     | f -> float_of_string ("." ^ (String.sub f 1 (String.length f - 1)))
-
 }
 
 (* FIXME: Some 0 values should not be allowed. *)
@@ -111,3 +108,37 @@ and timezone = parse
 | "" { None }
 
 and delim = parse 'T' | 't' | ' ' as d { Some d } | "" { None }
+
+(* Duration implementation is not really reliable because of
+ * inconsistancy in the number of days in a year or a month.
+ * Nevertheless, duration attempt to provide the most accurate
+ * approximation possible. *)
+and duration = parse
+
+| 'P' (num+ as y 'Y')? (num+ as mo 'M')?  (num+ as d 'D')?
+  ( 'T' (num+ as h 'H')? (num+ as mi 'M')?  (num+ as s 'S')? )?
+  (frac? as f )
+  { let int = function None -> 0 | Some x -> int_of_string x in
+    let (y, mo, d, h, mi, s) as p =
+      (int y, int mo, int d, int h, int mi, int s) in
+    let f = match frac f with
+      | 0. -> 0.
+      | f -> match p with
+             | (0,0,0,0,0,x) -> f
+             | (0,0,0,0,x,_) -> f *. 60.
+             | (0,0,0,x,_,_) -> f *. 3600.
+             | (0,0,x,_,_,_) -> f *. 86400.
+             | (0,x,_,_,_,_) -> f *. 86400. *. 30.436875 (* avg nb day / month *)
+             | (x,_,_,_,_,_) -> f *. 86400. *. 365.24219 (* avg nb day / year *)
+    in
+    (* Year 0 is 1970
+     * 0 month means that we are in the first month
+     * 0 day means that we are in the first day *)
+    mkdate (y + 1970) (mo + 1) (d + 1) +. mktime h mi s +. f
+ }
+
+| 'P' (num+ as w) 'W'
+  { assert false }
+
+| 'P'
+  { assert false }
