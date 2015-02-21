@@ -7,6 +7,15 @@ let mkdate y m d =
   |> Unix.mktime
   |> fst
 
+let mkdatetime y m d h mi s =
+  { Unix.tm_sec = s ; tm_min = mi ; tm_hour = h ;
+    tm_wday = -1 ; tm_yday = -1 ;tm_isdst = false ;
+    tm_mday = d ;
+    tm_mon = m - 1 ;
+    tm_year = y - 1900 ; }
+  |> Unix.mktime
+  |> fst
+
 let mktime h m s = h *. 3600. +. m *. 60. +. s
 
 let test p fn input expected =
@@ -19,6 +28,8 @@ let test p fn input expected =
 let date = test ISO8601.Permissive.string_of_date ISO8601.Permissive.date
 
 let time = test ISO8601.Permissive.string_of_time ISO8601.Permissive.time
+
+let datetime = test ISO8601.Permissive.string_of_datetime ISO8601.Permissive.datetime
 
 (* Parser tests *)
 let _ =
@@ -58,6 +69,10 @@ let _ =
             time "0545Z" (mktime 5. 45. 0.);
             time "16:23:48,3-06:00" (mktime 22. 23. 48.3) ;
             time "16:23.33+0600" (mktime 10. 23.33 0.) ;
+          ] ;
+    OUnit2.(>:::) "[DATETIME WITHOUT TIMEZONE]"
+          [
+            datetime "2015-02-15T11:55" (mkdatetime 2015 02 15 11 55 0) ;
           ] ;
   ]
   |> List.map OUnit2.run_test_tt_main
