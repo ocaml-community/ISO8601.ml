@@ -9,17 +9,18 @@ let mkdate y m d =
 
 let mktime h m s = h *. 3600. +. m *. 60. +. s
 
-let test fn input expected =
+let test p fn input expected =
   let result = fn input in
   let assert_equal = OUnit2.assert_equal
                        ~cmp:(OUnit2.cmp_float ~epsilon:Pervasives.epsilon_float)
-                       ~printer:string_of_float in
+                       ~printer:p in
   OUnit2.(>::) input (fun _ -> assert_equal expected result)
 
-let date = test ISO8601.Permissive.date
+let date = test ISO8601.Permissive.string_of_date ISO8601.Permissive.date
 
-let time = test ISO8601.Permissive.time
+let time = test ISO8601.Permissive.string_of_time ISO8601.Permissive.time
 
+(* Parser tests *)
 let _ =
   [
     OUnit2.(>:::) "[DATE]"
@@ -51,12 +52,12 @@ let _ =
           ] ;
     OUnit2.(>:::) "[TIME WITH TIMEZONE]"
           [
-            time "14:39:22-06:00" (mktime 8. 39. 22.) ;
-            time "14:39:22+0600" (mktime 20. 39. 22.);
-            time "14:39:22-01" (mktime 13. 39. 22.);
+            time "14:39:22-06:00" (mktime 20. 39. 22.) ;
+            time "14:39:22+0600" (mktime 8. 39. 22.);
+            time "14:39:22-01" (mktime 15. 39. 22.);
             time "0545Z" (mktime 5. 45. 0.);
-            time "16:23:48,3-06:00" (mktime 10. 23. 48.3) ;
-            time "16:23.33+0600" (mktime 22. 23.33 0.) ;
+            time "16:23:48,3-06:00" (mktime 22. 23. 48.3) ;
+            time "16:23.33+0600" (mktime 10. 23.33 0.) ;
           ] ;
   ]
   |> List.map OUnit2.run_test_tt_main
