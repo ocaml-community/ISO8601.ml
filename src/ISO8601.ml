@@ -46,7 +46,7 @@ module Permissive = struct
         match tz with
         | None -> (t, "")
         | Some 0. -> (t, "Z")
-        | Some x -> (t +. x, Format.sprintf "%2.0f:%2.0f"
+        | Some x -> (t -. x, Format.sprintf "%2.0f:%2.0f"
                                             (x /. 3600.)
                                             (abs_float (x /. 60.))) in
       (Unix.gmtime t, tz)
@@ -60,7 +60,7 @@ module Permissive = struct
     let pp_datetime ?(tz=None) fmt  x =
       let open Unix in
       let (x, tz) = pp_time_tz_aux x tz in
-      Format.fprintf fmt "%04d%02d-%02dT%02d:%02d:%02d%s"
+      Format.fprintf fmt "%04d-%02d-%02dT%02d:%02d:%02d%s"
                      (x.tm_year + 1900) (x.tm_mon + 1) x.tm_mday
                      x.tm_hour x.tm_min x.tm_sec tz
 
