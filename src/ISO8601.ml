@@ -38,7 +38,7 @@ module Permissive = struct
     let pp_date fmt x =
       let open Unix in
       let x = gmtime x in
-      Format.fprintf fmt "%04d%02d-%02d"
+      Format.fprintf fmt "%04d-%02d-%02d"
                      (x.tm_year + 1900) (x.tm_mon + 1) x.tm_mday
 
     let pp_time_tz_aux t tz =
