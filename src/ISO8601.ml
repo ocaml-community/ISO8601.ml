@@ -46,7 +46,7 @@ module Permissive = struct
         match tz with
         | None -> (t, "")
         | Some 0. -> (t, "Z")
-        | Some x -> (t -. x, Format.sprintf "%2.0f:%2.0f"
+        | Some x -> (t -. x, Format.sprintf "%+2.0f:%2.0f"
                                             (x /. 3600.)
                                             (abs_float (x /. 60.))) in
       (Unix.gmtime t, tz)
