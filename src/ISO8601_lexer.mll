@@ -5,16 +5,18 @@
 
   (* Date helpers *)
   let mkdate y m d =
-    fst (Unix.mktime {
-             Unix.tm_sec = 0 ;
-             tm_min = 0 ;
-             tm_hour = 0 ;
-             tm_mday = d ;
-             tm_mon = m - 1 ;
-             tm_year = y - 1900 ;
-             tm_wday = -1 ;
-             tm_yday = -1 ;
-             tm_isdst = false ; })
+    let local = fst (Unix.mktime {
+                         Unix.tm_sec = 0 ;
+                         tm_min = 0 ;
+                         tm_hour = 0 ;
+                         tm_mday = d ;
+                         tm_mon = m - 1 ;
+                         tm_year = y - 1900 ;
+                         tm_wday = -1 ;
+                         tm_yday = -1 ;
+                         tm_isdst = false ; }) in
+    let offset = fst (Unix.mktime (Unix.gmtime 0. )) in
+    local -. offset
 
   let ymd y m d = mkdate (int y) (int m) (int d)
   let ym y m = mkdate (int y) (int m) 1
