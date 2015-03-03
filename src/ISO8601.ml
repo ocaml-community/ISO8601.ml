@@ -89,6 +89,15 @@ module Permissive = struct
     let pp_datetimezone fmt (x, tz) =
       pp_format fmt "%Y-%M-%DT%h:%m:%s%Z:%z" x tz
 
+    let pp_date_basic fmt x = pp_format fmt "%Y%M%D" x 0.
+
+    let pp_time_basic fmt x = pp_format fmt "%h%m%s" x 0.
+
+    let pp_datetime_basic fmt x = pp_format fmt "%Y%M%DT%h%m%s" x 0.
+
+    let pp_datetimezone_basic fmt (x, tz) =
+      pp_format fmt "%Y%M%DT%h%m%s%Z%z" x tz
+
     let string_of_aux printer x =
       ignore (Format.flush_str_formatter ()) ;
       printer Format.str_formatter x ;
@@ -101,5 +110,13 @@ module Permissive = struct
     let string_of_datetime = string_of_aux pp_datetime
 
     let string_of_datetimezone = string_of_aux pp_datetimezone
+
+    let string_of_date_basic = string_of_aux pp_date_basic
+
+    let string_of_time_basic = string_of_aux pp_time_basic
+
+    let string_of_datetime_basic = string_of_aux pp_datetime_basic
+
+    let string_of_datetimezone_basic = string_of_aux pp_datetimezone_basic
 
 end
