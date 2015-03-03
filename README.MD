@@ -4,7 +4,8 @@
 
 ISO 8601 and RFC 3999 date parsing for OCaml.
 
-**Work in progress**
+**Work in progress. API should not be considerer stable
+until 1.0.0 version.**
 
 ## Permissive module
 
