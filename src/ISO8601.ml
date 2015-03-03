@@ -35,34 +35,59 @@ module Permissive = struct
     let datetime ?(reqtime=true) s =
       datetime_lex ~reqtime:reqtime (Lexing.from_string s)
 
-    let pp_date fmt x =
-      let open Unix in
-      let x = gmtime x in
-      Format.fprintf fmt "%04d-%02d-%02d"
-                     (x.tm_year + 1900) (x.tm_mon + 1) x.tm_mday
+    (* FIXME: possible loss of precision. *)
+    let pp_format fmt format x tz =
 
-    let pp_time_tz_aux t tz =
-      let (t, tz) =
-        match tz with
-        | None -> (t, "")
-        | Some 0. -> (t, "Z")
-        | Some x -> (t -. x, Format.sprintf "%+2.0f:%2.0f"
-                                            (x /. 3600.)
-                                            (abs_float (x /. 60.))) in
-      (Unix.gmtime t, tz)
-
-    let pp_time ?(tz=None) fmt x =
       let open Unix in
-      let (x, tz) = pp_time_tz_aux x tz in
-      Format.fprintf fmt "%02d:%02d:%02d%s"
-                     x.tm_hour x.tm_min x.tm_sec tz
+      let open Format in
 
-    let pp_datetime ?(tz=None) fmt  x =
-      let open Unix in
-      let (x, tz) = pp_time_tz_aux x tz in
-      Format.fprintf fmt "%04d-%02d-%02dT%02d:%02d:%02d%s"
-                     (x.tm_year + 1900) (x.tm_mon + 1) x.tm_mday
-                     x.tm_hour x.tm_min x.tm_sec tz
+      (* Be careful, do not forget to print timezone if there is one,
+       * or information printed will be wrong. *)
+      let x = gmtime (x -. tz) in
+
+      let conversion =
+        let pad2 = fprintf fmt "%02d" in
+        let pad4 = fprintf fmt "%04d" in
+        function
+
+        (* Date *)
+        | 'Y' -> pad4 (x.tm_year + 1900)
+        | 'M' -> pad2 (x.tm_mon + 1)
+        | 'D' -> pad2 x.tm_mday
+
+        (* Time *)
+        | 'h' -> pad2 x.tm_hour
+        | 'm' -> pad2 x.tm_min
+        | 's' -> pad2 x.tm_sec
+
+        (* Timezone *)
+        | 'Z' -> fprintf fmt "%+2.0f" (tz /. 3600.) (* Hours *)
+        | 'z' -> fprintf fmt "%2.0f" (abs_float (tz /. 60.)) (* Minutes *)
+
+        | '%' -> pp_print_char fmt '%'
+        |  c  -> failwith ("Bad format: %" ^ String.make 1 c)
+
+      in
+
+      let len = String.length format in
+      let rec parse_format i =
+        if i = len then ()
+        else match String.get format i with
+             | '%' -> conversion (String.get format (i + 1)) ;
+                      parse_format (i + 2)
+             |  c  -> pp_print_char fmt c ;
+                      parse_format (i + 1) in
+
+      parse_format 0
+
+    let pp_date fmt x = pp_format fmt "%Y-%M-%D" x 0.
+
+    let pp_time fmt x = pp_format fmt "%h:%m:%s" x 0.
+
+    let pp_datetime fmt x = pp_format fmt "%Y-%M-%DT%h:%m:%s" x 0.
+
+    let pp_datetimezone fmt (x, tz) =
+      pp_format fmt "%Y-%M-%DT%h:%m:%s%Z:%z" x tz
 
     let string_of_aux printer x =
       ignore (Format.flush_str_formatter ()) ;
@@ -71,8 +96,10 @@ module Permissive = struct
 
     let string_of_date = string_of_aux pp_date
 
-    let string_of_time ?(tz=None) = string_of_aux (pp_time ~tz:tz)
+    let string_of_time = string_of_aux pp_time
 
-    let string_of_datetime ?(tz=None) = string_of_aux (pp_datetime ~tz:tz)
+    let string_of_datetime = string_of_aux pp_datetime
+
+    let string_of_datetimezone = string_of_aux pp_datetimezone
 
 end
