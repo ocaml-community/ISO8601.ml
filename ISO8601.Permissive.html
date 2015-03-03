@@ -12,13 +12,13 @@
 <title>ISO8601.Permissive</title>
 </head>
 <body>
-<div class="navbar">&nbsp;<a href="ISO8601.html">Up</a>
+<div class="navbar">&nbsp;<a class="up" href="ISO8601.html" title="ISO8601">Up</a>
 &nbsp;</div>
-<center><h1>Module <a href="type_ISO8601.Permissive.html">ISO8601.Permissive</a></h1></center>
-<br>
+<h1>Module <a href="type_ISO8601.Permissive.html">ISO8601.Permissive</a></h1>
+
 <pre><span class="keyword">module</span> Permissive: <code class="code">sig</code> <a href="ISO8601.Permissive.html">..</a> <code class="code">end</code></pre><hr width="100%">
 <br>
-<span id="2_Dateparsing"><h2>Date parsing</h2></span>
+<h2 id="2_Dateparsing">Date parsing</h2>
 <p>
 
         <code class="code">date</code>, <code class="code">time</code> and <code class="code">datetime</code> parse a <code class="code">string</code> and return the
@@ -41,27 +41,92 @@
         representing <code class="code">timestamp * offset option (timezone)</code>. <code class="code">timestamp</code>
         will be the UTC time, and <code class="code">offset option</code> is just an information
         about the original timezone.<br>
-<pre><span id="VALdate_lex"><span class="keyword">val</span> date_lex</span> : <code class="type">Lexing.lexbuf -> float</code></pre><pre><span id="VALdate"><span class="keyword">val</span> date</span> : <code class="type">string -> float</code></pre><pre><span id="VALtime_tz_lex"><span class="keyword">val</span> time_tz_lex</span> : <code class="type">Lexing.lexbuf -> float * float option</code></pre><pre><span id="VALtime_lex"><span class="keyword">val</span> time_lex</span> : <code class="type">Lexing.lexbuf -> float</code></pre><pre><span id="VALtime_tz"><span class="keyword">val</span> time_tz</span> : <code class="type">string -> float * float option</code></pre><pre><span id="VALtime"><span class="keyword">val</span> time</span> : <code class="type">string -> float</code></pre><pre><span id="VALdatetime_tz_lex"><span class="keyword">val</span> datetime_tz_lex</span> : <code class="type">?reqtime:bool -> Lexing.lexbuf -> float * float option</code></pre><pre><span id="VALdatetime_lex"><span class="keyword">val</span> datetime_lex</span> : <code class="type">?reqtime:bool -> Lexing.lexbuf -> float</code></pre><pre><span id="VALdatetime_tz"><span class="keyword">val</span> datetime_tz</span> : <code class="type">?reqtime:bool -> string -> float * float option</code></pre><pre><span id="VALdatetime"><span class="keyword">val</span> datetime</span> : <code class="type">?reqtime:bool -> string -> float</code></pre><br>
-<span id="2_Printingfunctions"><h2>Printing functions</h2></span>
-<p>
 
-        <code class="code">pp_X</code> functions will take a <code class="code">Format.formatter</code> to
-        print the representation of a <code class="code">X</code>.
+<pre><span id="VALdate_lex"><span class="keyword">val</span> date_lex</span> : <code class="type">Lexing.lexbuf -> float</code></pre>
+<pre><span id="VALdate"><span class="keyword">val</span> date</span> : <code class="type">string -> float</code></pre>
+<pre><span id="VALtime_tz_lex"><span class="keyword">val</span> time_tz_lex</span> : <code class="type">Lexing.lexbuf -> float * float option</code></pre>
+<pre><span id="VALtime_lex"><span class="keyword">val</span> time_lex</span> : <code class="type">Lexing.lexbuf -> float</code></pre>
+<pre><span id="VALtime_tz"><span class="keyword">val</span> time_tz</span> : <code class="type">string -> float * float option</code></pre>
+<pre><span id="VALtime"><span class="keyword">val</span> time</span> : <code class="type">string -> float</code></pre>
+<pre><span id="VALdatetime_tz_lex"><span class="keyword">val</span> datetime_tz_lex</span> : <code class="type">?reqtime:bool -> Lexing.lexbuf -> float * float option</code></pre>
+<pre><span id="VALdatetime_lex"><span class="keyword">val</span> datetime_lex</span> : <code class="type">?reqtime:bool -> Lexing.lexbuf -> float</code></pre>
+<pre><span id="VALdatetime_tz"><span class="keyword">val</span> datetime_tz</span> : <code class="type">?reqtime:bool -> string -> float * float option</code></pre>
+<pre><span id="VALdatetime"><span class="keyword">val</span> datetime</span> : <code class="type">?reqtime:bool -> string -> float</code></pre><br>
+<h2 id="2_Printingfunctions">Printing functions</h2>
 <p>
-
-        <code class="code">string_of_X</code> functions return a string representation
-        of a <code class="code">X</code>.
-<p>
-
-        Times relative function take an optionnal timezone argument.
-<p>
-
-        <code class="code">X</code> define the format used:<ul>
-<li>date: <code class="code"> YYYY-MM-DD </code></li>
-<li>time: <code class="code"> hh:mm:ss </code></li>
-<li>datetime: <code class="code"> YYYY-MM-DDThh:mm:ss </code></li>
-</ul>
 
         <b>NB: fractionnal part of timestamps will be lost when printing
          with current implementation.</b><br>
-<pre><span id="VALpp_date"><span class="keyword">val</span> pp_date</span> : <code class="type">Format.formatter -> float -> unit</code></pre><pre><span id="VALstring_of_date"><span class="keyword">val</span> string_of_date</span> : <code class="type">float -> string</code></pre><pre><span id="VALpp_time"><span class="keyword">val</span> pp_time</span> : <code class="type">?tz:float option -> Format.formatter -> float -> unit</code></pre><pre><span id="VALstring_of_time"><span class="keyword">val</span> string_of_time</span> : <code class="type">?tz:float option -> float -> string</code></pre><pre><span id="VALpp_datetime"><span class="keyword">val</span> pp_datetime</span> : <code class="type">?tz:float option -> Format.formatter -> float -> unit</code></pre><pre><span id="VALstring_of_datetime"><span class="keyword">val</span> string_of_datetime</span> : <code class="type">?tz:float option -> float -> string</code></pre></body></html>
+
+<pre><span id="VALpp_format"><span class="keyword">val</span> pp_format</span> : <code class="type">Format.formatter -> string -> float -> float -> unit</code></pre><div class="info ">
+<code class="code">pp_format fmt format x tz</code>
+<p>
+
+        <code class="code">x</code> is the timestamp, and <code class="code">tz</code> the time zone offset.
+<p>
+
+        The <code class="code">format</code> string is a character string which contains
+        two types of objects: plain characters, which are simply copied
+        to <code class="code">fmt</code>, and conversion specifications, each of which causes
+        conversion and printing of (a part of) <code class="code">x</code> or <code class="code">tz</code>.
+<p>
+
+        <b>If you do not want to use a timezone, set it to 0.</b>
+<p>
+
+        Conversion specifications have the form <code class="code">%X</code>, where X can be:
+<p>
+<ul>
+<li><code class="code">Y</code>: Year</li>
+<li><code class="code">M</code>: Month</li>
+<li><code class="code">D</code>: Day</li>
+<li><code class="code">h</code>: Hours</li>
+<li><code class="code">m</code>: Minutes</li>
+<li><code class="code">s</code>: Seconds</li>
+<li><code class="code">Z</code>: Hours of <code class="code">tz</code> offset (with its sign)</li>
+<li><code class="code">z</code>: Minutes of <code class="code">tz</code> offset (without sign)</li>
+<li><code class="code">%</code>: The '%' character</li>
+</ul>
+<br>
+</div>
+
+<pre><span id="VALpp_date"><span class="keyword">val</span> pp_date</span> : <code class="type">Format.formatter -> float -> unit</code></pre><div class="info ">
+"%Y-%M-%D" format.<br>
+</div>
+
+<pre><span id="VALstring_of_date"><span class="keyword">val</span> string_of_date</span> : <code class="type">float -> string</code></pre>
+<pre><span id="VALpp_date_basic"><span class="keyword">val</span> pp_date_basic</span> : <code class="type">Format.formatter -> float -> unit</code></pre><div class="info ">
+"%Y%M%D" format.<br>
+</div>
+
+<pre><span id="VALstring_of_date_basic"><span class="keyword">val</span> string_of_date_basic</span> : <code class="type">float -> string</code></pre>
+<pre><span id="VALpp_time"><span class="keyword">val</span> pp_time</span> : <code class="type">Format.formatter -> float -> unit</code></pre><div class="info ">
+"%h:%m:%s" format.<br>
+</div>
+
+<pre><span id="VALstring_of_time"><span class="keyword">val</span> string_of_time</span> : <code class="type">float -> string</code></pre>
+<pre><span id="VALpp_time_basic"><span class="keyword">val</span> pp_time_basic</span> : <code class="type">Format.formatter -> float -> unit</code></pre><div class="info ">
+"%h%m%s" format.<br>
+</div>
+
+<pre><span id="VALstring_of_time_basic"><span class="keyword">val</span> string_of_time_basic</span> : <code class="type">float -> string</code></pre>
+<pre><span id="VALpp_datetime"><span class="keyword">val</span> pp_datetime</span> : <code class="type">Format.formatter -> float -> unit</code></pre><div class="info ">
+"%Y-%M-%DT%h:%m:%s" format.<br>
+</div>
+
+<pre><span id="VALstring_of_datetime"><span class="keyword">val</span> string_of_datetime</span> : <code class="type">float -> string</code></pre>
+<pre><span id="VALpp_datetime_basic"><span class="keyword">val</span> pp_datetime_basic</span> : <code class="type">Format.formatter -> float -> unit</code></pre><div class="info ">
+"%Y%M%DT%h%m%s" format.<br>
+</div>
+
+<pre><span id="VALstring_of_datetime_basic"><span class="keyword">val</span> string_of_datetime_basic</span> : <code class="type">float -> string</code></pre>
+<pre><span id="VALpp_datetimezone"><span class="keyword">val</span> pp_datetimezone</span> : <code class="type">Format.formatter -> float * float -> unit</code></pre><div class="info ">
+"%Y-%M-%DT%h:%m:%s%Z:%z" format.<br>
+</div>
+
+<pre><span id="VALstring_of_datetimezone"><span class="keyword">val</span> string_of_datetimezone</span> : <code class="type">float * float -> string</code></pre>
+<pre><span id="VALpp_datetimezone_basic"><span class="keyword">val</span> pp_datetimezone_basic</span> : <code class="type">Format.formatter -> float * float -> unit</code></pre><div class="info ">
+"%Y%M%DT%h%m%s%Z%z" format.<br>
+</div>
+
+<pre><span id="VALstring_of_datetimezone_basic"><span class="keyword">val</span> string_of_datetimezone_basic</span> : <code class="type">float * float -> string</code></pre></body></html>
