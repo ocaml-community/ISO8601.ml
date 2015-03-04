@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.2.1
+
+- Fixing the previous important bugfix. (!)
+- Fixing the daylight time saving offset in timestamp.
+
 ## 0.2.0
 
 - Breaking change in API: functions with optionnal time zone
