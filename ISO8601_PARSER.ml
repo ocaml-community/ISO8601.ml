@@ -1,9 +1,9 @@
 let test p fn input expected =
   let result = fn input in
-  let assert_equal = OUnit2.assert_equal
-                       ~cmp:(OUnit2.cmp_float ~epsilon:Pervasives.epsilon_float)
+  let assert_equal = OUnit.assert_equal
+                       ~cmp:(OUnit.cmp_float ~epsilon:Pervasives.epsilon_float)
                        ~printer:p in
-  OUnit2.(>::) input (fun _ -> assert_equal expected result)
+  OUnit.(>::) input (fun _ -> assert_equal expected result)
 
 let date = test ISO8601.Permissive.string_of_date ISO8601.Permissive.date
 
@@ -17,7 +17,7 @@ let _ =
   let mkdate = Utils.mkdate in
   let mktime = Utils.mktime in
   [
-    OUnit2.(>:::) "[DATE]"
+    OUnit.(>:::) "[DATE]"
           [
             date "1970-01-01" 0. ;
             date "19700101" 0. ;
@@ -34,7 +34,7 @@ let _ =
             date "2009-139" (mkdate 2009 5 19);
             date "2012-060" (mkdate 2012 2 29); (* leap year *)
           ] ;
-    OUnit2.(>:::) "[TIME WITHOUT TIMEZONE]"
+    OUnit.(>:::) "[TIME WITHOUT TIMEZONE]"
           [
             time "12:34" (mktime 12. 34. 0.) ;
             time "00:00" (mktime 0. 0. 0.) ;
@@ -49,7 +49,7 @@ let _ =
             time "16.23334444" (mktime 16.23334444 0. 0.);
             time "16,2283" (mktime 16.2283 0. 0.);
           ] ;
-    OUnit2.(>:::) "[TIME WITH TIMEZONE]"
+    OUnit.(>:::) "[TIME WITH TIMEZONE]"
           [
             time "14:39:22-06:00" (mktime 20. 39. 22.) ;
             time "14:39:22+0600" (mktime 8. 39. 22.);
@@ -58,9 +58,9 @@ let _ =
             time "16:23:48,3-06:00" (mktime 22. 23. 48.3) ;
             time "16:23.33+0600" (mktime 10. 23.33 0.) ;
           ] ;
-    OUnit2.(>:::) "[DATETIME WITHOUT TIMEZONE]"
+    OUnit.(>:::) "[DATETIME WITHOUT TIMEZONE]"
           [
             datetime "2015-02-15T11:55" (mkdatetime 2015 02 15 11 55 0) ;
           ] ;
   ]
-  |> List.map OUnit2.run_test_tt_main
+  |> List.map OUnit.run_test_tt_main
