@@ -27,6 +27,7 @@ let _ =
             test 0. (mkdate 1970 1 1) ;
             test (24. *. 3600.) (mkdate 1970 1 2) ;
             test (31. *. 24. *. 3600.) (mkdate 1970 2 1) ;
+            test (365. *. 24. *. 3600.) (mkdate 1971 1 1) ;
             test 583804800. (mkdate 1988 7 2) ;
           ] ;
     OUnit.(>:::) "[UTILS mktime]"
