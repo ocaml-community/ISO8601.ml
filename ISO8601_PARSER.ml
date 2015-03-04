@@ -1,5 +1,3 @@
-open Utils
-
 let test p fn input expected =
   let result = fn input in
   let assert_equal = OUnit2.assert_equal
@@ -15,6 +13,9 @@ let datetime = test ISO8601.Permissive.string_of_datetime ISO8601.Permissive.dat
 
 (* Parser tests *)
 let _ =
+  let mkdatetime = Utils.mkdatetime in
+  let mkdate = Utils.mkdate in
+  let mktime = Utils.mktime in
   [
     OUnit2.(>:::) "[DATE]"
           [
