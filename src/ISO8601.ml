@@ -43,8 +43,7 @@ module Permissive = struct
 
       (* Be careful, do not forget to print timezone if there is one,
        * or information printed will be wrong. *)
-      let local_offset = fst (Unix.mktime (Unix.gmtime 0.)) in
-      let x = gmtime (x -. tz -. local_offset) in
+      let x = gmtime (x -. tz) in
 
       let conversion =
         let pad2 = fprintf fmt "%02d" in
