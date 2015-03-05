@@ -1,10 +1,19 @@
 language: c
 
-script: bash -ex .travis-ci.sh
-
 env:
-  - OCAML_VERSION=4.02.1 OPAM_VERSION=1.2.0
-  - OCAML_VERSION=4.01.0 OPAM_VERSION=1.2.0
+  global:
+    - PACKAGE_NAME="ISO8601"
+    - PACKAGE_URL="https://github.com/sagotch/ISO8601.ml.git"
+    - OPAM_DEPENDS="ocamlfind ounit ISO8601"
+  matrix:
+    - OCAML_VERSION=4.02.1 OPAM_VERSION=1.2.0
+    - OCAML_VERSION=4.01.0 OPAM_VERSION=1.2.0
+
+install: curl -s https://raw.githubusercontent.com/sagotch/travis-ocaml/master/travis-ocaml.sh | bash
+
+script:
+  - eval `opam config env`
+  - make build run
 
 notifications:
   email: false
