@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.2
+
+- Fixed "Warning 40: tm_isdst was selected from type Unix.tm"
+
 ## 0.2.1
 
 - Fixing the previous important bugfix. (!)
