@@ -7,7 +7,7 @@ let mkdatetime y m d h mi s =
                   tm_mday = d ;
                   tm_mon = m - 1 ;
                   tm_year = y - 1900 ; } in
-  t -. local_offset +. (if tm.tm_isdst then 3600. else 0.)
+  t -. local_offset +. (if tm.Unix.tm_isdst then 3600. else 0.)
 
 let mkdate y m d = mkdatetime y m d 0 0 0
 
