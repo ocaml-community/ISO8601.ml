@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.3
+
+- Fixed zero padding when printing time zone offset.
+
 ## 0.2.2
 
 - Fixed "Warning 40: tm_isdst was selected from type Unix.tm"
