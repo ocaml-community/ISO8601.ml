@@ -61,8 +61,8 @@ module Permissive = struct
         | 's' -> pad2 x.tm_sec
 
         (* Timezone *)
-        | 'Z' -> fprintf fmt "%+2.0f" (tz /. 3600.) (* Hours *)
-        | 'z' -> fprintf fmt "%2.0f" (abs_float (tz /. 60.)) (* Minutes *)
+        | 'Z' -> fprintf fmt "%0+3.0f" (tz /. 3600.) (* Hours *)
+        | 'z' -> fprintf fmt "%02.0f" (abs_float (tz /. 60.)) (* Minutes *)
 
         | '%' -> pp_print_char fmt '%'
         |  c  -> failwith ("Bad format: %" ^ String.make 1 c)
