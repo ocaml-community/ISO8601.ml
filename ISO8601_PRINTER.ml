@@ -10,6 +10,13 @@ let time = test ISO8601.Permissive.string_of_time
 
 let datetime = test ISO8601.Permissive.string_of_datetime
 
+let datetimezone input expected =
+  let assert_equal = OUnit.assert_equal ~printer:(fun x -> x) in
+  OUnit.(>::) (string_of_float (fst input))
+       (fun _ -> assert_equal
+                   expected
+                   (ISO8601.Permissive.string_of_datetimezone input))
+
 let _ =
   let mkdate = Utils.mkdate in
   [
@@ -30,6 +37,11 @@ let _ =
             time 1. "00:00:01" ;
             time 60. "00:01:00" ;
             time 3600. "01:00:00" ;
+          ] ;
+    OUnit.(>:::) "[PRINTER DATETIMEZONE]"
+          [
+            datetimezone (0., 0.) "1970-01-01T00:00:00+00:00" ;
+            datetimezone (296638320., 0.) "1979-05-27T07:32:00+00:00"
           ] ;
   ]
   |> List.map OUnit.run_test_tt_main
