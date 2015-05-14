@@ -1,6 +1,6 @@
 LIB=ISO8601
 LIB_FILES=$(addprefix $(LIB)., a cmxa cma cmi)
-VERSION=0.2.3
+VERSION=0.2.4
 
 .INTERMEDIATE: $(LIB).odocl
 

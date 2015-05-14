@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.2.4
+
+- "pp_format: the 'minute' specifier is now modulo 60"
+  (patch by Erkki Seppälä)
+
 ## 0.2.3
 
 - Fixed zero padding when printing time zone offset.
