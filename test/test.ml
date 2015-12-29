@@ -70,7 +70,7 @@ let fixed_time_tests f = [
   "fixed_unix_time_nowish_ist", `Quick,
   f 1451407335. 19800.    "2015-12-29T22:12:15+05:30";
   "fixed_unix_time_nowish_vet", `Quick,
-  f 1451407335. (-16200.) "2015-12-29T22:12:15-04:30";
+  f 1451407335. (-16200.) "2015-12-29T12:12:15-04:30";
 ]
 
 let str_tm year month day hour minute second tz =
