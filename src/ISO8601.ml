@@ -43,7 +43,6 @@ module Permissive = struct
     let datetime ?(reqtime=true) s =
       datetime_lex ~reqtime:reqtime (Lexing.from_string s)
 
-    (* FIXME: possible loss of precision. *)
     let pp_format fmt format x tz =
 
       let open Unix in
@@ -56,7 +55,9 @@ module Permissive = struct
         | Some tz -> gmtime (x +. tz)
       in
 
-      let print_tz_hours fmt tz = fprintf fmt "%0+3.0f" (tz /. 3600.) in
+      let print_tz_hours fmt tz =
+        fprintf fmt "%0+3d" (Pervasives.truncate (tz /. 3600.))
+      in
 
       let print_tz_minutes fmt tz =
         fprintf fmt "%02.0f" (mod_float (abs_float (tz /. 60.)) 60.0)
