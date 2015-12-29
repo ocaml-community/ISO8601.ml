@@ -13,9 +13,17 @@ module Permissive = struct
     let datetime_tz_lex ?(reqtime=true) lexbuf =
       let d = date_lex lexbuf in
       match Lexer.delim lexbuf with
-      | None -> if reqtime then assert false else (d, None)
-      | Some _ -> let (t, tz) = time_tz_lex lexbuf in
-                  (d +. t, tz)
+      | None ->
+        (* TODO: this should be a real exception *)
+        if reqtime then assert false else (d, None)
+      | Some _ ->
+        let (t, tz) = time_tz_lex lexbuf in
+        match tz with
+        | None -> (d +. t, tz)
+        | Some tz ->
+          let t = d +. t in
+          let offt = fst (Unix.mktime (Unix.gmtime t)) in
+          (t -. (offt -. t), Some tz)
 
     let time_lex lexbuf =
       fst (time_tz_lex lexbuf)
