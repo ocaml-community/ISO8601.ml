@@ -51,7 +51,16 @@ module Permissive = struct
 
       (* Be careful, do not forget to print timezone if there is one,
        * or information printed will be wrong. *)
-      let x = gmtime (x -. tz) in
+      let x = match tz with
+        | None    -> localtime x
+        | Some tz -> gmtime (x +. tz)
+      in
+
+      let print_tz_hours fmt tz = fprintf fmt "%0+3.0f" (tz /. 3600.) in
+
+      let print_tz_minutes fmt tz =
+        fprintf fmt "%02.0f" (mod_float (abs_float (tz /. 60.)) 60.0)
+      in
 
       let conversion =
         let pad2 = fprintf fmt "%02d" in
@@ -69,8 +78,21 @@ module Permissive = struct
         | 's' -> pad2 x.tm_sec
 
         (* Timezone *)
-        | 'Z' -> fprintf fmt "%0+3.0f" (tz /. 3600.) (* Hours *)
-        | 'z' -> fprintf fmt "%02.0f" (mod_float (abs_float (tz /. 60.)) 60.0) (* Minutes *)
+        | 'Z' -> begin match tz with (* with colon *)
+          | None    -> ()
+          | Some 0. -> fprintf fmt "Z"
+          | Some tz ->
+            print_tz_hours fmt tz;
+            fprintf fmt ":";
+            print_tz_minutes fmt tz
+        end
+        | 'z' -> begin match tz with (* without colon *)
+          | None    -> ()
+          | Some 0. -> fprintf fmt "Z"
+          | Some tz ->
+            print_tz_hours fmt tz;
+            print_tz_minutes fmt tz
+        end
 
         | '%' -> pp_print_char fmt '%'
         |  c  -> failwith ("Bad format: %" ^ String.make 1 c)
@@ -88,23 +110,28 @@ module Permissive = struct
 
       parse_format 0
 
-    let pp_date fmt x = pp_format fmt "%Y-%M-%D" x 0.
+    let pp_date_utc fmt x = pp_format fmt "%Y-%M-%D" x (Some 0.)
+    let pp_date     fmt x = pp_format fmt "%Y-%M-%D" x None
 
-    let pp_time fmt x = pp_format fmt "%h:%m:%s" x 0.
+    let pp_time_utc fmt x = pp_format fmt "%h:%m:%s" x (Some 0.)
+    let pp_time     fmt x = pp_format fmt "%h:%m:%s" x None
 
-    let pp_datetime fmt x = pp_format fmt "%Y-%M-%DT%h:%m:%s" x 0.
+    let pp_datetime fmt x = pp_format fmt "%Y-%M-%DT%h:%m:%s" x None
 
     let pp_datetimezone fmt (x, tz) =
-      pp_format fmt "%Y-%M-%DT%h:%m:%s%Z:%z" x tz
+      pp_format fmt "%Y-%M-%DT%h:%m:%s%Z" x (Some tz)
 
-    let pp_date_basic fmt x = pp_format fmt "%Y%M%D" x 0.
+    let pp_date_basic_utc fmt x = pp_format fmt "%Y%M%D" x (Some 0.)
+    let pp_date_basic     fmt x = pp_format fmt "%Y%M%D" x None
 
-    let pp_time_basic fmt x = pp_format fmt "%h%m%s" x 0.
+    let pp_time_basic_utc fmt x = pp_format fmt "%h%m%s" x (Some 0.)
+    let pp_time_basic     fmt x = pp_format fmt "%h%m%s" x None
 
-    let pp_datetime_basic fmt x = pp_format fmt "%Y%M%DT%h%m%s" x 0.
+    let pp_datetime_basic_utc fmt x = pp_format fmt "%Y%M%DT%h%m%s" x (Some 0.)
+    let pp_datetime_basic     fmt x = pp_format fmt "%Y%M%DT%h%m%s" x None
 
     let pp_datetimezone_basic fmt (x, tz) =
-      pp_format fmt "%Y%M%DT%h%m%s%Z%z" x tz
+      pp_format fmt "%Y%M%DT%h%m%s%z" x (Some tz)
 
     let string_of_aux printer x =
       ignore (Format.flush_str_formatter ()) ;

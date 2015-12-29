@@ -53,8 +53,6 @@ module Permissive : sig
         to [fmt], and conversion specifications, each of which causes
         conversion and printing of (a part of) [x] or [tz].
 
-        {b If you do not want to use a timezone, set it to 0.}
-
         Conversion specifications have the form [%X], where X can be:
 
         - [Y]: Year
@@ -63,26 +61,32 @@ module Permissive : sig
         - [h]: Hours
         - [m]: Minutes
         - [s]: Seconds
-        - [Z]: Hours of [tz] offset (with its sign)
-        - [z]: Minutes of [tz] offset (without sign)
+        - [Z]: Hours and minutes of [tz] offset (with sign), colon separated,
+               'Z' if [tz] offset is 0; if [tz] is None, print nothing
+        - [z]: Hours and minutes of [tz] offset (with sign), without colon,
+               'Z' if [tz] offset is 0; if [tz] is None, print nothing
         - [%]: The '%' character
 
      *)
-    val pp_format : Format.formatter -> string -> float -> float -> unit
+    val pp_format : Format.formatter -> string -> float -> float option -> unit
 
     (** "%Y-%M-%D" format. *)
+    val pp_date_utc : Format.formatter -> float -> unit
     val pp_date : Format.formatter -> float -> unit
     val string_of_date : float -> string
 
     (** "%Y%M%D" format. *)
+    val pp_date_basic_utc : Format.formatter -> float -> unit
     val pp_date_basic : Format.formatter -> float -> unit
     val string_of_date_basic : float -> string
 
     (** "%h:%m:%s" format. *)
+    val pp_time_utc : Format.formatter -> float -> unit
     val pp_time : Format.formatter -> float -> unit
     val string_of_time : float -> string
 
     (** "%h%m%s" format. *)
+    val pp_time_basic_utc : Format.formatter -> float -> unit
     val pp_time_basic : Format.formatter -> float -> unit
     val string_of_time_basic : float -> string
 
@@ -91,14 +95,15 @@ module Permissive : sig
     val string_of_datetime : float -> string
 
     (** "%Y%M%DT%h%m%s" format. *)
+    val pp_datetime_basic_utc : Format.formatter -> float -> unit
     val pp_datetime_basic : Format.formatter -> float -> unit
     val string_of_datetime_basic : float -> string
 
-    (** "%Y-%M-%DT%h:%m:%s%Z:%z" format. *)
+    (** "%Y-%M-%DT%h:%m:%s%Z" format. *)
     val pp_datetimezone : Format.formatter -> (float * float) -> unit
     val string_of_datetimezone : (float * float) -> string
 
-    (** "%Y%M%DT%h%m%s%Z%z" format. *)
+    (** "%Y%M%DT%h%m%s%z" format. *)
     val pp_datetimezone_basic : Format.formatter -> (float * float) -> unit
     val string_of_datetimezone_basic : (float * float) -> string
 
