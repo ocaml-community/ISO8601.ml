@@ -40,6 +40,10 @@ let tm_struct = (module Tm_struct : Alcotest.TESTABLE with type t = Unix.tm)
 type hemi = Neg | Pos
 type tz = Local | Z | Tz of hemi * int * int
 
+let est = Tz (Neg, 5, 0)
+let ist = Tz (Pos, 5, 30)
+let vet = Tz (Neg, 4, 30)
+
 let time_tests f = [
   "before_1900",      `Quick, f 1861  9  1 8 0 0 Local;
   "before_epoch",     `Quick, f 1969  1  1 0 0 1 Local;
@@ -47,9 +51,26 @@ let time_tests f = [
   "before_1900_z",    `Quick, f 1861  9  1 8 0 0 Z;
   "before_epoch_z",   `Quick, f 1969  1  1 0 0 1 Z;
   "nowish_z",         `Quick, f 2015 12 27 0 0 1 Z;
-  "before_1900_est",  `Quick, f 1861  9  1 8 0 0 (Tz (Neg,5,0));
-  "before_epoch_est", `Quick, f 1969  1  1 0 0 1 (Tz (Neg,5,0));
-  "nowish_est",       `Quick, f 2015 12 27 0 0 1 (Tz (Neg,5,0));
+  "before_1900_est",  `Quick, f 1861  9  1 8 0 0 est;
+  "before_epoch_est", `Quick, f 1969  1  1 0 0 1 est;
+  "nowish_est",       `Quick, f 2015 12 27 0 0 1 est;
+  "before_1900_ist",  `Quick, f 1861  9  1 8 0 0 ist;
+  "before_epoch_ist", `Quick, f 1969  1  1 0 0 1 ist;
+  "nowish_ist",       `Quick, f 2015 12 27 0 0 1 ist;
+  "before_1900_vet",  `Quick, f 1861  9  1 8 0 0 vet;
+  "before_epoch_vet", `Quick, f 1969  1  1 0 0 1 vet;
+  "nowish_vet",       `Quick, f 2015 12 27 0 0 1 vet;
+]
+
+let fixed_time_tests f = [
+  "fixed_unix_time_nowish_utc", `Quick,
+  f 1451407335. 0.        "2015-12-29T16:42:15Z";
+  "fixed_unix_time_nowish_est", `Quick,
+  f 1451407335. (-18000.) "2015-12-29T11:42:15-05:00";
+  "fixed_unix_time_nowish_ist", `Quick,
+  f 1451407335. 19800.    "2015-12-29T22:12:15+05:30";
+  "fixed_unix_time_nowish_vet", `Quick,
+  f 1451407335. (-16200.) "2015-12-29T22:12:15-04:30";
 ]
 
 let str_tm year month day hour minute second tz =
@@ -104,7 +125,12 @@ let parse_test year month day hour minute second tz () =
     in
     Alcotest.(check tm_struct ("parse "^str) tm output)
 
-let parse_tests = time_tests parse_test
+let parse_fixed_unix_time unix_time tz s () =
+  let parsed = int_of_float (ISO8601.Permissive.datetime s) in
+  Alcotest.(check int ("parse "^s) (int_of_float unix_time) parsed)
+
+let parse_tests =
+  time_tests parse_test @ fixed_time_tests parse_fixed_unix_time
 
 let string_of_datetime unix_time = function
   | Local -> ISO8601.Permissive.string_of_datetime unix_time
@@ -133,7 +159,12 @@ let print_test year month day hour minute second tz () =
     let output = string_of_datetime unix_time tz in
     Alcotest.(check string ("print "^str) str output)
 
-let print_tests = time_tests print_test
+let print_fixed_unix_time unix_time tz s () =
+  let output = ISO8601.Permissive.string_of_datetimezone (unix_time, tz) in
+  Alcotest.(check string ("print "^s) s output)
+
+let print_tests =
+  time_tests print_test @ fixed_time_tests print_fixed_unix_time
 
 let rt_test year month day hour minute second tz () =
   if year < 1900
@@ -145,7 +176,17 @@ let rt_test year month day hour minute second tz () =
     let output = string_of_datetime (ISO8601.Permissive.datetime str) tz in
     Alcotest.(check string ("roundtrip "^str) str output)
 
-let rt_tests = time_tests rt_test
+let rt_fixed_unix_time unix_time tz s () =
+  let output = ISO8601.Permissive.(string_of_datetimezone (datetime s, tz)) in
+  Alcotest.(check string ("roundtrip "^s) s output);
+  let output = int_of_float ISO8601.Permissive.(
+    datetime (string_of_datetimezone (unix_time, tz))
+  ) in
+  let unix_time = int_of_float unix_time in
+  Alcotest.(check int ("roundtrip "^string_of_int unix_time) unix_time output)
+
+let rt_tests =
+  time_tests rt_test @ fixed_time_tests rt_fixed_unix_time
 
 let suites = [
   "parse", parse_tests;
