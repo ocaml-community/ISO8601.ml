@@ -73,30 +73,37 @@ module Permissive : sig
     (** "%Y-%M-%D" format. *)
     val pp_date_utc : Format.formatter -> float -> unit
     val pp_date : Format.formatter -> float -> unit
+    val string_of_date_utc : float -> string
     val string_of_date : float -> string
 
     (** "%Y%M%D" format. *)
     val pp_date_basic_utc : Format.formatter -> float -> unit
     val pp_date_basic : Format.formatter -> float -> unit
+    val string_of_date_basic_utc : float -> string
     val string_of_date_basic : float -> string
 
     (** "%h:%m:%s" format. *)
     val pp_time_utc : Format.formatter -> float -> unit
     val pp_time : Format.formatter -> float -> unit
+    val string_of_time_utc : float -> string
     val string_of_time : float -> string
 
     (** "%h%m%s" format. *)
     val pp_time_basic_utc : Format.formatter -> float -> unit
     val pp_time_basic : Format.formatter -> float -> unit
+    val string_of_time_basic_utc : float -> string
     val string_of_time_basic : float -> string
 
     (** "%Y-%M-%DT%h:%m:%s" format. *)
+    val pp_datetime_utc : Format.formatter -> float -> unit
     val pp_datetime : Format.formatter -> float -> unit
+    val string_of_datetime_utc : float -> string
     val string_of_datetime : float -> string
 
     (** "%Y%M%DT%h%m%s" format. *)
     val pp_datetime_basic_utc : Format.formatter -> float -> unit
     val pp_datetime_basic : Format.formatter -> float -> unit
+    val string_of_datetime_basic_utc : float -> string
     val string_of_datetime_basic : float -> string
 
     (** "%Y-%M-%DT%h:%m:%s%Z" format. *)
