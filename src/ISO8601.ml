@@ -117,7 +117,8 @@ module Permissive = struct
     let pp_time_utc fmt x = pp_format fmt "%h:%m:%s" x (Some 0.)
     let pp_time     fmt x = pp_format fmt "%h:%m:%s" x None
 
-    let pp_datetime fmt x = pp_format fmt "%Y-%M-%DT%h:%m:%s" x None
+    let pp_datetime_utc fmt x = pp_format fmt "%Y-%M-%DT%h:%m:%s" x (Some 0.)
+    let pp_datetime     fmt x = pp_format fmt "%Y-%M-%DT%h:%m:%s" x None
 
     let pp_datetimezone fmt (x, tz) =
       pp_format fmt "%Y-%M-%DT%h:%m:%s%Z" x (Some tz)
@@ -139,19 +140,25 @@ module Permissive = struct
       printer Format.str_formatter x ;
       Format.flush_str_formatter ()
 
-    let string_of_date = string_of_aux pp_date
+    let string_of_date_utc = string_of_aux pp_date_utc
+    let string_of_date     = string_of_aux pp_date
 
-    let string_of_time = string_of_aux pp_time
+    let string_of_time_utc = string_of_aux pp_time_utc
+    let string_of_time     = string_of_aux pp_time
 
-    let string_of_datetime = string_of_aux pp_datetime
+    let string_of_datetime_utc = string_of_aux pp_datetime_utc
+    let string_of_datetime     = string_of_aux pp_datetime
 
     let string_of_datetimezone = string_of_aux pp_datetimezone
 
-    let string_of_date_basic = string_of_aux pp_date_basic
+    let string_of_date_basic_utc = string_of_aux pp_date_basic_utc
+    let string_of_date_basic     = string_of_aux pp_date_basic
 
-    let string_of_time_basic = string_of_aux pp_time_basic
+    let string_of_time_basic_utc = string_of_aux pp_time_basic_utc
+    let string_of_time_basic     = string_of_aux pp_time_basic
 
-    let string_of_datetime_basic = string_of_aux pp_datetime_basic
+    let string_of_datetime_basic_utc = string_of_aux pp_datetime_basic_utc
+    let string_of_datetime_basic     = string_of_aux pp_datetime_basic
 
     let string_of_datetimezone_basic = string_of_aux pp_datetimezone_basic
 
