@@ -20,10 +20,17 @@ bug-reports: "https://github.com/sagotch/ISO8601.ml/issues"
 
 build-doc: [ make "doc" ]
 
+build-test: [ make "test" ]
+
 build: [ make "build" ]
 
 install: [ make "install" ]
 
 remove: [ "ocamlfind" "remove" "ISO8601" ]
 
-depends: [ "ocamlfind" ]
+depends: [
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "base-unix"
+  "alcotest" {test}
+]

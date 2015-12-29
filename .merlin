@@ -1,0 +1,4 @@
+PKG alcotest
+
+S src
+B _build/**
