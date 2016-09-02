@@ -13,9 +13,17 @@ module Permissive = struct
     let datetime_tz_lex ?(reqtime=true) lexbuf =
       let d = date_lex lexbuf in
       match Lexer.delim lexbuf with
-      | None -> if reqtime then assert false else (d, None)
-      | Some _ -> let (t, tz) = time_tz_lex lexbuf in
-                  (d +. t, tz)
+      | None ->
+        (* TODO: this should be a real exception *)
+        if reqtime then assert false else (d, None)
+      | Some _ ->
+        let (t, tz) = time_tz_lex lexbuf in
+        match tz with
+        | None -> (d +. t, tz)
+        | Some tz ->
+          let t = d +. t in
+          let offt = fst (Unix.mktime (Unix.gmtime t)) in
+          (t -. (offt -. t), Some tz)
 
     let time_lex lexbuf =
       fst (time_tz_lex lexbuf)
@@ -35,7 +43,6 @@ module Permissive = struct
     let datetime ?(reqtime=true) s =
       datetime_lex ~reqtime:reqtime (Lexing.from_string s)
 
-    (* FIXME: possible loss of precision. *)
     let pp_format fmt format x tz =
 
       let open Unix in
@@ -43,7 +50,18 @@ module Permissive = struct
 
       (* Be careful, do not forget to print timezone if there is one,
        * or information printed will be wrong. *)
-      let x = gmtime (x -. tz) in
+      let x = match tz with
+        | None    -> localtime x
+        | Some tz -> gmtime (x +. tz)
+      in
+
+      let print_tz_hours fmt tz =
+        fprintf fmt "%0+3d" (Pervasives.truncate (tz /. 3600.))
+      in
+
+      let print_tz_minutes fmt tz =
+        fprintf fmt "%02.0f" (mod_float (abs_float (tz /. 60.)) 60.0)
+      in
 
       let conversion =
         let pad2 = fprintf fmt "%02d" in
@@ -61,8 +79,21 @@ module Permissive = struct
         | 's' -> pad2 x.tm_sec
 
         (* Timezone *)
-        | 'Z' -> fprintf fmt "%0+3.0f" (tz /. 3600.) (* Hours *)
-        | 'z' -> fprintf fmt "%02.0f" (mod_float (abs_float (tz /. 60.)) 60.0) (* Minutes *)
+        | 'Z' -> begin match tz with (* with colon *)
+          | None    -> ()
+          | Some 0. -> fprintf fmt "Z"
+          | Some tz ->
+            print_tz_hours fmt tz;
+            fprintf fmt ":";
+            print_tz_minutes fmt tz
+        end
+        | 'z' -> begin match tz with (* without colon *)
+          | None    -> ()
+          | Some 0. -> fprintf fmt "Z"
+          | Some tz ->
+            print_tz_hours fmt tz;
+            print_tz_minutes fmt tz
+        end
 
         | '%' -> pp_print_char fmt '%'
         |  c  -> failwith ("Bad format: %" ^ String.make 1 c)
@@ -80,42 +111,54 @@ module Permissive = struct
 
       parse_format 0
 
-    let pp_date fmt x = pp_format fmt "%Y-%M-%D" x 0.
+    let pp_date_utc fmt x = pp_format fmt "%Y-%M-%D" x (Some 0.)
+    let pp_date     fmt x = pp_format fmt "%Y-%M-%D" x None
 
-    let pp_time fmt x = pp_format fmt "%h:%m:%s" x 0.
+    let pp_time_utc fmt x = pp_format fmt "%h:%m:%s" x (Some 0.)
+    let pp_time     fmt x = pp_format fmt "%h:%m:%s" x None
 
-    let pp_datetime fmt x = pp_format fmt "%Y-%M-%DT%h:%m:%s" x 0.
+    let pp_datetime_utc fmt x = pp_format fmt "%Y-%M-%DT%h:%m:%s" x (Some 0.)
+    let pp_datetime     fmt x = pp_format fmt "%Y-%M-%DT%h:%m:%s" x None
 
     let pp_datetimezone fmt (x, tz) =
-      pp_format fmt "%Y-%M-%DT%h:%m:%s%Z:%z" x tz
+      pp_format fmt "%Y-%M-%DT%h:%m:%s%Z" x (Some tz)
 
-    let pp_date_basic fmt x = pp_format fmt "%Y%M%D" x 0.
+    let pp_date_basic_utc fmt x = pp_format fmt "%Y%M%D" x (Some 0.)
+    let pp_date_basic     fmt x = pp_format fmt "%Y%M%D" x None
 
-    let pp_time_basic fmt x = pp_format fmt "%h%m%s" x 0.
+    let pp_time_basic_utc fmt x = pp_format fmt "%h%m%s" x (Some 0.)
+    let pp_time_basic     fmt x = pp_format fmt "%h%m%s" x None
 
-    let pp_datetime_basic fmt x = pp_format fmt "%Y%M%DT%h%m%s" x 0.
+    let pp_datetime_basic_utc fmt x = pp_format fmt "%Y%M%DT%h%m%s" x (Some 0.)
+    let pp_datetime_basic     fmt x = pp_format fmt "%Y%M%DT%h%m%s" x None
 
     let pp_datetimezone_basic fmt (x, tz) =
-      pp_format fmt "%Y%M%DT%h%m%s%Z%z" x tz
+      pp_format fmt "%Y%M%DT%h%m%s%z" x (Some tz)
 
     let string_of_aux printer x =
       ignore (Format.flush_str_formatter ()) ;
       printer Format.str_formatter x ;
       Format.flush_str_formatter ()
 
-    let string_of_date = string_of_aux pp_date
+    let string_of_date_utc = string_of_aux pp_date_utc
+    let string_of_date     = string_of_aux pp_date
 
-    let string_of_time = string_of_aux pp_time
+    let string_of_time_utc = string_of_aux pp_time_utc
+    let string_of_time     = string_of_aux pp_time
 
-    let string_of_datetime = string_of_aux pp_datetime
+    let string_of_datetime_utc = string_of_aux pp_datetime_utc
+    let string_of_datetime     = string_of_aux pp_datetime
 
     let string_of_datetimezone = string_of_aux pp_datetimezone
 
-    let string_of_date_basic = string_of_aux pp_date_basic
+    let string_of_date_basic_utc = string_of_aux pp_date_basic_utc
+    let string_of_date_basic     = string_of_aux pp_date_basic
 
-    let string_of_time_basic = string_of_aux pp_time_basic
+    let string_of_time_basic_utc = string_of_aux pp_time_basic_utc
+    let string_of_time_basic     = string_of_aux pp_time_basic
 
-    let string_of_datetime_basic = string_of_aux pp_datetime_basic
+    let string_of_datetime_basic_utc = string_of_aux pp_datetime_basic_utc
+    let string_of_datetime_basic     = string_of_aux pp_datetime_basic
 
     let string_of_datetimezone_basic = string_of_aux pp_datetimezone_basic
 
