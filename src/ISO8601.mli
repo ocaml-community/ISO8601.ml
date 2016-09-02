@@ -1,6 +1,6 @@
 (** {2 ISO 8601 and RFC 3339 parsing and printing} *)
 
-(** Version 0.2.4 *)
+(** Version 0.2.5 *)
 
 module Permissive : sig
 

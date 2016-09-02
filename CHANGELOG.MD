@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.5
+
+- Added unix requirement in META file
+
 ## 0.2.4
 
 - "pp_format: the 'minute' specifier is now modulo 60"
