@@ -1,34 +1,16 @@
-LIB=ISO8601
-LIB_FILES=$(addprefix $(LIB)., a cmxa cma cmi)
-VERSION=0.2.5
 
-.INTERMEDIATE: $(LIB).odocl
+build:
+	jbuilder build @install
 
-build: $(LIB_FILES)
-
-$(LIB_FILES):
-	ocamlbuild -I src $@
-
-install: META $(LIB_FILES)
-	ocamlfind install $(LIB) META $(addprefix _build/src/, $(LIB_FILES))
-
-uninstall:
-	ocamlfind remove $(LIB)
-
-$(LIB).odocl:
-	echo 'ISO8601' > $@
-
-doc: $(LIB).odocl
-	ocamlbuild -I src $(LIB).docdir/index.html
+doc:
+	jbuilder build @doc
 
 gh-pages: doc
 	commitmsg="Documentation for $(VERSION) version." \
-	docdir="$(LIB).docdir" \
+	docdir="_build/default/_doc/_html/" \
 	upstream="origin" \
 	ghpup
 
 clean:
-	ocamlbuild -clean
+	jbuilder clean
 
-clean:
-	ocamlbuild -clean

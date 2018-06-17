@@ -22,11 +22,7 @@ build-doc: [ make "doc" ]
 
 build: [ make "build" ]
 
-install: [ make "install" ]
-
-remove: [ "ocamlfind" "remove" "ISO8601" ]
-
 depends: [
-  "ocamlfind" {build}
-  "ocamlbuild" {build}
+  "jbuilder" {build}
+  "base-unix"
 ]
