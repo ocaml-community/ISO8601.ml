@@ -66,13 +66,13 @@ rule date = parse
   { ymd y m d}
 
 (* YYYYWww / YYYY-Www *)
-| (year as y) 'W' (week as w)
-| (year as y) "-W" (week as w)
+| (year as _y) 'W' (week as _w)
+| (year as _y) "-W" (week as _w)
   { assert false }
 
 (* YYYYWwwD / YYYY-Www-D *)
-| (year as y) 'W' (week as w) (week_day as d)
-| (year as y) '-' 'W' (week as w) '-' (week_day as d)
+| (year as _y) 'W' (week as _w) (week_day as _d)
+| (year as _y) '-' 'W' (week as _w) '-' (week_day as _d)
   { assert false }
 
 (* YYYYDDD / YYYY-DDD *)
