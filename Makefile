@@ -1,13 +1,16 @@
+.PHONY: build test doc ISO8601.install install clean
 
 build:
 	dune build @install
+
+test:
+	dune build @runtest
 
 doc:
 	dune build @doc
 
 ISO8601.install:
 	dune build @install
-.PHONY: ISO8601.install
 
 install: ISO8601.install
 	dune install ISO8601
