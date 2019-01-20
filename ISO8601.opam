@@ -22,7 +22,9 @@ build-doc: [ make "doc" ]
 
 build: [ make "build" ]
 
+install: [ make "install" ]
+
 depends: [
-  "jbuilder" {build}
+  "dune" {build}
   "base-unix"
 ]

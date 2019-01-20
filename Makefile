@@ -1,9 +1,16 @@
 
 build:
-	jbuilder build @install
+	dune build @install
 
 doc:
-	jbuilder build @doc
+	dune build @doc
+
+ISO8601.install:
+	dune build @install
+.PHONY: ISO8601.install
+
+install: ISO8601.install
+	dune install ISO8601
 
 gh-pages: doc
 	commitmsg="Documentation for $(VERSION) version." \
@@ -12,5 +19,4 @@ gh-pages: doc
 	ghpup
 
 clean:
-	jbuilder clean
-
+	dune clean
