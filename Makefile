@@ -1,9 +1,9 @@
 
 build:
-	jbuilder build @install
+	@dune build @install
 
 doc:
-	jbuilder build @doc
+	@dune build @doc
 
 gh-pages: doc
 	commitmsg="Documentation for $(VERSION) version." \
@@ -12,5 +12,5 @@ gh-pages: doc
 	ghpup
 
 clean:
-	jbuilder clean
+	@dune clean
 

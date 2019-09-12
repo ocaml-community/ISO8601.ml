@@ -1,28 +1,20 @@
-opam-version: "1.2"
-
-available: [ ocaml-version >= "3.12.1" ]
-
+opam-version: "2.0"
 version: "0.2.5"
-
 name: "ISO8601"
-
 authors: [ "Julien Sagot" ]
-
-maintainer: "ju.sagot@gmail.com"
-
-homepage: "http://github.com/sagotch/ISO8601.ml/"
-
-dev-repo: "https://github.com/sagotch/ISO8601.ml.git"
-
-doc: "http://sagotch.github.io/ISO8601.ml/"
-
-bug-reports: "https://github.com/sagotch/ISO8601.ml/issues"
-
-build-doc: [ make "doc" ]
-
-build: [ make "build" ]
-
+maintainer: "ocaml-community"
+homepage: "http://github.com/ocaml-community/ISO8601.ml/"
+dev-repo: "git+https://github.com/ocaml-community/ISO8601.ml.git"
+doc: "http://ocaml-community.github.io/ISO8601.ml/"
+bug-reports: "https://github.com/ocaml-community/ISO8601.ml/issues"
+build: [
+  ["dune" "build" "-p" name]
+  ["dune" "build" "@doc" "-p" name] {with-doc}
+  ["dune" "runtest" "-p" name] {with-test}
+]
 depends: [
-  "jbuilder" {build}
+  "dune" {>= "1.0"}
   "base-unix"
+  "ocaml" {>= "3.12.1" }
+  "odoc" {with-test}
 ]
