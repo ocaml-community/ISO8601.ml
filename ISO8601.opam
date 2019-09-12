@@ -7,6 +7,7 @@ homepage: "http://github.com/ocaml-community/ISO8601.ml/"
 dev-repo: "git+https://github.com/ocaml-community/ISO8601.ml.git"
 doc: "http://ocaml-community.github.io/ISO8601.ml/"
 bug-reports: "https://github.com/ocaml-community/ISO8601.ml/issues"
+synopsis: "ISO 8601 and RFC 3999 date parsing for OCaml"
 build: [
   ["dune" "build" "-p" name]
   ["dune" "build" "@doc" "-p" name] {with-doc}
