@@ -14,7 +14,7 @@
                       tm_yday = -1 ;
                       tm_isdst = false ; } in
     let offset = fst (Unix.mktime (Unix.gmtime 0. )) in
-    (** FIXME: Ensure the daylight saving time correction is right. *)
+    (* FIXME: Ensure the daylight saving time correction is right. *)
     t -. offset +. (if tm.Unix.tm_isdst then 3600. else 0.)
 
   let ymd y m d = mkdate (int y) (int m) (int d)
