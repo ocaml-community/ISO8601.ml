@@ -1,6 +1,5 @@
 (** {2 ISO 8601 and RFC 3339 parsing and printing} *)
 
-(** Version 0.2.5 *)
 
 module Permissive : sig
 
@@ -22,20 +21,42 @@ module Permissive : sig
         representing [timestamp * offset option (timezone)]. [timestamp]
         will be the UTC time, and [offset option] is just an information
         about the original timezone.
+
+        If no timezone is specified, the datetime will be assumed to be
+        in the local timezone (and will therefore be converted to UTC
+        accordingly).
      *)
 
     val date_lex : Lexing.lexbuf -> float
+
     val date : string -> float
+    (** Parse date with timezone *)
 
     val time_tz_lex : Lexing.lexbuf -> (float * float option)
+
     val time_lex : Lexing.lexbuf -> float
+
     val time_tz : string -> (float * float option)
+    (** Parse time with timezone *)
+
     val time : string -> float
+    (** Parse time *)
 
     val datetime_tz_lex : ?reqtime:bool -> Lexing.lexbuf -> (float * float option)
+    (** Parse a date or datetime
+        @param reqtime if true, requires the time portion to be present
+        @raise Failure if the time is not present and [reqtime=true] *)
+
     val datetime_lex : ?reqtime:bool -> Lexing.lexbuf -> float
+    (** @raise Failure if the time portion is not present and [reqtime=true] *)
+
     val datetime_tz : ?reqtime:bool -> string -> (float * float option)
+    (** Parse a datetime with timezone
+        @raise Failure if the time portion is not present and [reqtime=true] *)
+
     val datetime : ?reqtime:bool -> string -> float
+    (** Parse a datetime
+        @raise Failure if the time portion is not present and [reqtime=true] *)
 
     (** {2 Printing functions}
 
@@ -53,8 +74,6 @@ module Permissive : sig
         to [fmt], and conversion specifications, each of which causes
         conversion and printing of (a part of) [x] or [tz].
 
-        {b If you do not want to use a timezone, set it to 0.}
-
         Conversion specifications have the form [%X], where X can be:
 
         - [Y]: Year
@@ -63,43 +82,106 @@ module Permissive : sig
         - [h]: Hours
         - [m]: Minutes
         - [s]: Seconds
-        - [Z]: Hours of [tz] offset (with its sign)
-        - [z]: Minutes of [tz] offset (without sign)
+        - [Z]: Hours and minutes of [tz] offset (with sign), colon separated,
+               'Z' if [tz] offset is 0; if [tz] is None, print nothing
+        - [z]: Hours and minutes of [tz] offset (with sign), without colon,
+               'Z' if [tz] offset is 0; if [tz] is None, print nothing
         - [%]: The '%' character
 
      *)
-    val pp_format : Format.formatter -> string -> float -> float -> unit
+    val pp_format : Format.formatter -> string -> float -> float option -> unit
 
     (** "%Y-%M-%D" format. *)
+
+    val pp_date_utc : Format.formatter -> float -> unit
+    (** Prints the date in UTC timezone
+        @since 0.3.0 *)
+
     val pp_date : Format.formatter -> float -> unit
+
+    val string_of_date_utc : float -> string
+    (** Prints the date in UTC timezone
+        @since 0.3.0 *)
+
     val string_of_date : float -> string
 
-    (** "%Y%M%D" format. *)
+    (** {2 "%Y%M%D" format.} *)
+
+    val pp_date_basic_utc : Format.formatter -> float -> unit
+    (** Prints the date in UTC timezone
+        @since 0.3.0 *)
+
     val pp_date_basic : Format.formatter -> float -> unit
+
+    val string_of_date_basic_utc : float -> string
+    (** Prints the date in UTC timezone
+        @since 0.3.0 *)
+
     val string_of_date_basic : float -> string
 
-    (** "%h:%m:%s" format. *)
+    (** {2 "%h:%m:%s" format.} *)
+
+    val pp_time_utc : Format.formatter -> float -> unit
+    (** Prints the time in UTC timezone
+        @since 0.3.0 *)
+
     val pp_time : Format.formatter -> float -> unit
+
+    val string_of_time_utc : float -> string
+    (** Prints the time in UTC timezone
+        @since 0.3.0 *)
+
     val string_of_time : float -> string
 
-    (** "%h%m%s" format. *)
+    (** {2 "%h%m%s" format.} *)
+
+    val pp_time_basic_utc : Format.formatter -> float -> unit
+    (** @since 0.3.0 *)
+
     val pp_time_basic : Format.formatter -> float -> unit
+
+    val string_of_time_basic_utc : float -> string
+    (** @since 0.3.0 *)
+
     val string_of_time_basic : float -> string
 
-    (** "%Y-%M-%DT%h:%m:%s" format. *)
+    (** {2 "%Y-%M-%DT%h:%m:%s" format.} *)
+
+    val pp_datetime_utc : Format.formatter -> float -> unit
+    (** Prints the datetime in the UTC timezone.
+        @since 0.3.0 *)
+
     val pp_datetime : Format.formatter -> float -> unit
+
+    val string_of_datetime_utc : float -> string
+    (** @since 0.3.0 *)
+
     val string_of_datetime : float -> string
 
     (** "%Y%M%DT%h%m%s" format. *)
+
+    val pp_datetime_basic_utc : Format.formatter -> float -> unit
+    (** Prints the datetime in the UTC timezone.
+        @since 0.3.0 *)
+
     val pp_datetime_basic : Format.formatter -> float -> unit
+
+    val string_of_datetime_basic_utc : float -> string
+    (** Prints the datetime in the UTC timezone.
+        @since 0.3.0 *)
+
     val string_of_datetime_basic : float -> string
 
-    (** "%Y-%M-%DT%h:%m:%s%Z:%z" format. *)
+    (** "%Y-%M-%DT%h:%m:%s%Z" format. *)
+
     val pp_datetimezone : Format.formatter -> (float * float) -> unit
+
     val string_of_datetimezone : (float * float) -> string
 
-    (** "%Y%M%DT%h%m%s%Z%z" format. *)
+    (** "%Y%M%DT%h%m%s%z" format. *)
+
     val pp_datetimezone_basic : Format.formatter -> (float * float) -> unit
+
     val string_of_datetimezone_basic : (float * float) -> string
 
 end

@@ -4,11 +4,11 @@ let test (fn : float -> string) (input : float) (expected : string)  =
   OUnit.(>::) (string_of_float input)
         (fun _ -> assert_equal expected result)
 
-let date = test ISO8601.Permissive.string_of_date
+let date = test ISO8601.Permissive.string_of_date_utc
 
-let time = test ISO8601.Permissive.string_of_time
+let time = test ISO8601.Permissive.string_of_time_utc
 
-let datetime = test ISO8601.Permissive.string_of_datetime
+let datetime = test ISO8601.Permissive.string_of_datetime_utc
 
 let datetimezone input expected =
   let assert_equal = OUnit.assert_equal ~printer:(fun x -> x) in
@@ -40,7 +40,7 @@ let suite =
           ] ;
     OUnit.(>:::) "[PRINTER DATETIMEZONE]"
           [
-            datetimezone (0., 0.) "1970-01-01T00:00:00+00:00" ;
-            datetimezone (296638320., 0.) "1979-05-27T07:32:00+00:00"
+            datetimezone (0., 0.) "1970-01-01T00:00:00Z" ;
+            datetimezone (296638320., 0.) "1979-05-27T07:32:00Z"
           ] ;
   ]
