@@ -5,4 +5,5 @@ let suite = OUnit.(>:::) "ISO8601" [
 ]
 
 let _ =
-  OUnit.run_test_tt_main suite
+  ignore (OUnit.run_test_tt_main suite : _ list);
+  Alcotest.run "ISO8601" Test_pr_5.suites
