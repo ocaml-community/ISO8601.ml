@@ -1,6 +1,6 @@
 # ISO8601
 
-[![Build Status](https://travis-ci.org/ocaml-community/ISO8601.ml.svg?branch=test)](https://travis-ci.org/ocaml-community/ISO8601.ml)
+[![Build Status](https://travis-ci.org/ocaml-community/ISO8601.ml.svg?branch=master)](https://travis-ci.org/ocaml-community/ISO8601.ml)
 
 ISO 8601 and RFC 3999 date parsing for OCaml.
 
