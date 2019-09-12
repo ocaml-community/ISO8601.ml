@@ -1,8 +1,0 @@
-
-(library
-  ((name ISO8601)
-   (public_name ISO8601)
-   (wrapped true)
-   (libraries (unix))))
-
-(ocamllex (ISO8601_lexer))
