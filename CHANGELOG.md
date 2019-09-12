@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 0.2.6
+
+- migration to ocaml-community
+- move to dune
+- update travis build to use Docker
+- Merge branch 'test' into master, use dune for tests
+
 ## 0.2.5
 
 - Added unix requirement in META file

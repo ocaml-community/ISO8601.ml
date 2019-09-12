@@ -1,8 +1,8 @@
 opam-version: "2.0"
-version: "0.2.5"
+version: "0.2.6"
 name: "ISO8601"
 authors: [ "Julien Sagot" ]
-maintainer: "ocaml-community"
+maintainer: ["c-cube" "ocaml-community"]
 homepage: "http://github.com/ocaml-community/ISO8601.ml/"
 dev-repo: "git+https://github.com/ocaml-community/ISO8601.ml.git"
 doc: "http://ocaml-community.github.io/ISO8601.ml/"
