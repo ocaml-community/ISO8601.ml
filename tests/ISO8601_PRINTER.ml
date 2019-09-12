@@ -17,9 +17,9 @@ let datetimezone input expected =
                    expected
                    (ISO8601.Permissive.string_of_datetimezone input))
 
-let _ =
+let suite =
   let mkdate = Utils.mkdate in
-  [
+  OUnit.(>:::) "[PRINTER]" [
     OUnit.(>:::) "[PRINTER DATE]"
           [
             date 0. "1970-01-01" ;
@@ -44,4 +44,3 @@ let _ =
             datetimezone (296638320., 0.) "1979-05-27T07:32:00+00:00"
           ] ;
   ]
-  |> List.map OUnit.run_test_tt_main

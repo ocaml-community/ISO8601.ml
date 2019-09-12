@@ -1,4 +1,6 @@
 
+all: build test
+
 build:
 	@dune build @install
 
@@ -17,3 +19,4 @@ gh-pages: doc
 clean:
 	@dune clean
 
+.PHONY: test build clean

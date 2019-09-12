@@ -12,11 +12,11 @@ let time = test ISO8601.Permissive.string_of_time ISO8601.Permissive.time
 let datetime = test ISO8601.Permissive.string_of_datetime ISO8601.Permissive.datetime
 
 (* Parser tests *)
-let _ =
+let suite =
   let mkdatetime = Utils.mkdatetime in
   let mkdate = Utils.mkdate in
   let mktime = Utils.mktime in
-  [
+  OUnit.(>:::) "[PARSER]" [
     OUnit.(>:::) "[DATE]"
           [
             date "1970-01-01" 0. ;
@@ -63,4 +63,3 @@ let _ =
             datetime "2015-02-15T11:55" (mkdatetime 2015 02 15 11 55 0) ;
           ] ;
   ]
-  |> List.map OUnit.run_test_tt_main

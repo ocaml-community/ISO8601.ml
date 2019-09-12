@@ -6,11 +6,11 @@ let test a b =
                     ~printer:string_of_float
                     a b)
 
-let _ =
+let suite =
   let mkdatetime = Utils.mkdatetime in
   let mkdate = Utils.mkdate in
   let mktime = Utils.mktime in
-  [
+  OUnit.(>:::) "[UTILS]" [
     OUnit.(>:::) "[UTILS mkdatetime]"
           [
             test 0. (mkdatetime 1970 1 1 0 0 0) ;
@@ -37,4 +37,3 @@ let _ =
             test 1. (mktime 0. 0. 1.) ;
           ]
   ]
-  |> List.map OUnit.run_test_tt_main
