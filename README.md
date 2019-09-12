@@ -7,6 +7,8 @@ ISO 8601 and RFC 3339 date parsing for OCaml.
 **Work in progress. API should not be considerer stable
 until 1.0.0 version.**
 
+[API Docs](https://ocaml-community.github.io/ISO8601/)
+
 ## Permissive module
 
 Date, time, and datetime parsing function of this module are
