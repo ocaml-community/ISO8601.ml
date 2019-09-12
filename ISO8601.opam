@@ -16,5 +16,6 @@ depends: [
   "dune" {>= "1.0"}
   "base-unix"
   "ocaml" {>= "3.12.1" }
-  "odoc" {with-test}
+  "odoc" {with-doc}
+  "ounit" {with-test}
 ]
