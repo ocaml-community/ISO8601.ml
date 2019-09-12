@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/ocaml-community/ISO8601.ml.svg?branch=master)](https://travis-ci.org/ocaml-community/ISO8601.ml)
 
-ISO 8601 and RFC 3999 date parsing for OCaml.
+ISO 8601 and RFC 3339 date parsing for OCaml.
 
 **Work in progress. API should not be considerer stable
 until 1.0.0 version.**
