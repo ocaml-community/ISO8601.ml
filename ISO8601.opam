@@ -11,7 +11,7 @@ synopsis: "ISO 8601 and RFC 3999 date parsing for OCaml"
 build: [
   ["dune" "build" "-p" name]
   ["dune" "build" "@doc" "-p" name] {with-doc}
-  ["dune" "runtest" "-p" name] {with-test}
+  #["dune" "runtest" "-p" name] {with-test}
 ]
 depends: [
   "dune" {>= "1.0"}
