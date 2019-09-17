@@ -5,7 +5,7 @@ let test ~p fn input expected =
   let assert_equal =
     OUnit.assert_equal
       ~cmp:(OUnit.cmp_float ~epsilon:Pervasives.epsilon_float)
-      ~printer:(fun x -> Printf.sprintf "%.5f (as %s)" x (p x))
+      ~printer:(fun x -> Printf.sprintf "%.6f (as %s)" x (p x))
   in
   OUnit.(>::) input (fun () -> with_utc (fun () -> assert_equal expected result))
 
@@ -66,4 +66,10 @@ let suite =
           [
             datetime "2015-02-15T11:55" (mkdatetime 2015 02 15 11 55 0) ;
           ] ;
+    OUnit.(>:::) "[DATETIME WITH TIMEZONE]"
+      [
+        datetime "1979-05-27T07:32:00Z" (mkdatetime 1979 05 27 7 32 0);
+        datetime "1979-05-27T00:32:00-07:00" (mkdatetime 1979 05 27 7 32 0);
+        datetime "1979-05-27T00:32:00.999999-07:00" (mkdatetime 1979 05 27 7 32 0 +. 0.999999);
+      ];
   ]
