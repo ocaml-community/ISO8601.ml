@@ -21,9 +21,10 @@ module Permissive = struct
         match tz with
         | None -> (d +. t, tz)
         | Some tz ->
-          let t = d +. t in
-          let offt = fst (Unix.mktime (Unix.gmtime t)) in
-          (t -. (offt -. t), Some tz)
+          (* obtain the daylight saving time for the given TZ and day *)
+          let td = d +. floor t in
+          let offt = fst (Unix.mktime (Unix.gmtime td)) -. td in
+          ((d +. t) -. offt, Some tz)
 
     let time_lex lexbuf =
       fst (time_tz_lex lexbuf)
