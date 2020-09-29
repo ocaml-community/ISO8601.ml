@@ -1,10 +1,12 @@
 let test a b =
   OUnit.(>::)
-        (string_of_float a)
-        (fun _ -> OUnit.assert_equal
-                    ~cmp:(OUnit.cmp_float ~epsilon:Pervasives.epsilon_float)
-                    ~printer:string_of_float
-                    a b)
+    (string_of_float a)
+    (fun _ ->
+     OUnit.assert_equal
+     ~cmp:(OUnit.cmp_float ~epsilon:Pervasives.epsilon_float)
+     ~printer:(fun f ->
+         Printf.sprintf "%.5f (as %s)" f (ISO8601.Permissive.string_of_datetime_utc f))
+     a b)
 
 let suite =
   let mkdatetime = Utils.mkdatetime in

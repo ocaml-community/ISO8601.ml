@@ -1,15 +1,19 @@
-let test p fn input expected =
+let with_utc = Utils.with_utc
+
+let test ~p fn input expected =
   let result = fn input in
-  let assert_equal = OUnit.assert_equal
-                       ~cmp:(OUnit.cmp_float ~epsilon:Pervasives.epsilon_float)
-                       ~printer:p in
-  OUnit.(>::) input (fun _ -> assert_equal expected result)
+  let assert_equal =
+    OUnit.assert_equal
+      ~cmp:(OUnit.cmp_float ~epsilon:Pervasives.epsilon_float)
+      ~printer:(fun x -> Printf.sprintf "%.6f (as %s)" x (p x))
+  in
+  OUnit.(>::) input (fun () -> with_utc (fun () -> assert_equal expected result))
 
-let date = test ISO8601.Permissive.string_of_date ISO8601.Permissive.date
+let date = test ~p:ISO8601.Permissive.string_of_datetime_utc ISO8601.Permissive.date
 
-let time = test ISO8601.Permissive.string_of_time ISO8601.Permissive.time
+let time = test ~p:ISO8601.Permissive.string_of_time_utc ISO8601.Permissive.time
 
-let datetime = test ISO8601.Permissive.string_of_datetime ISO8601.Permissive.datetime
+let datetime = test ~p:ISO8601.Permissive.string_of_datetime_utc ISO8601.Permissive.datetime
 
 (* Parser tests *)
 let suite =
@@ -62,4 +66,10 @@ let suite =
           [
             datetime "2015-02-15T11:55" (mkdatetime 2015 02 15 11 55 0) ;
           ] ;
+    OUnit.(>:::) "[DATETIME WITH TIMEZONE]"
+      [
+        datetime "1979-05-27T07:32:00Z" (mkdatetime 1979 05 27 7 32 0);
+        datetime "1979-05-27T00:32:00-07:00" (mkdatetime 1979 05 27 7 32 0);
+        datetime "1979-05-27T00:32:00.999999-07:00" (mkdatetime 1979 05 27 7 32 0 +. 0.999999);
+      ];
   ]
