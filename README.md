@@ -19,7 +19,22 @@ and no consistency is required (it is possible to mix basic format for
 date and extended format for time), lowercase letters can be used,
 and datetime separator may be a space character.
 
-Note: for now, this module is the only one available.
+For printing, `pp_date`, `pp_datetime`, `pp_datetimezone` should produce
+strings conforming to the standard.
+
+For example:
+
+```ocaml
+# let now = Unix.gettimeofday();;
+val now : float = 1607446060.98364711
+# let s = ISO8601.Permissive.string_of_datetime now;;
+val s : string = "2020-12-08T16:47:40"
+# ISO8601.Permissive.datetime s;;
+- : float = 1607446060.
+```
+
+
+_NOTE_: for now, this module is the only one available.
 
 ## Installation
 
