@@ -1,7 +1,7 @@
 let test p fn input expected =
   let result = fn input in
   let assert_equal = OUnit.assert_equal
-                       ~cmp:(OUnit.cmp_float ~epsilon:Pervasives.epsilon_float)
+                       ~cmp:(OUnit.cmp_float ~epsilon:Stdlib.epsilon_float)
                        ~printer:p in
   OUnit.(>::) input (fun _ -> assert_equal expected result)
 

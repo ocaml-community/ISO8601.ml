@@ -8,15 +8,26 @@ dev-repo: "git+https://github.com/ocaml-community/ISO8601.ml.git"
 doc: "http://ocaml-community.github.io/ISO8601.ml/"
 bug-reports: "https://github.com/ocaml-community/ISO8601.ml/issues"
 synopsis: "ISO 8601 and RFC 3999 date parsing for OCaml"
-build: [
-  ["dune" "build" "-p" name]
-  ["dune" "build" "@doc" "-p" name] {with-doc}
-  #["dune" "runtest" "-p" name] {with-test}
-]
 depends: [
-  "dune" {>= "1.0"}
+  "dune" {>= "2.7"}
   "base-unix"
-  "ocaml" {>= "3.12.1" }
+  "ocaml" {>= "4.03.0" }
+  "stdlib-shims" {with-test}
   "odoc" {with-doc}
-  "ounit" {with-test}
+  "ounit2" {with-test}
+  "bisect_ppx" {with-test & >= "2.5" & dev}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
 ]
