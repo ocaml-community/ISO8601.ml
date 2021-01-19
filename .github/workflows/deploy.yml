@@ -20,7 +20,8 @@ jobs:
         run: |
           opam pin add . -y --no-action
           opam depext -y ISO8601
-          opam install -y ./*.opam ocb --deps-only --with-test --with-doc
+          opam install -y ./*.opam --deps-only --with-test --with-doc
+          opam install -y ocb
           opam upgrade --fixup
           touch doc/.nojekyll
       - name: api
