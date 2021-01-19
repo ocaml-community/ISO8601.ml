@@ -1,6 +1,6 @@
 # ISO8601
 
-![Build Status](https://github.com/ocaml-community/ISO8601.ml/workflows/build/badge.svg)
+![Build Status](https://github.com/ocaml-community/ISO8601.ml/workflows/build/badge.svg) [![coverage percentage](https://raw.githubusercontent.com/ocaml-community/ISO8601.ml/gh-pages/coverage/badge.svg)](https://ocaml-community.github.io/ISO8601.ml/coverage/)
 
 ISO 8601 and RFC 3339 date parsing for OCaml.
 
