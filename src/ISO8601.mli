@@ -39,7 +39,7 @@ module Permissive : sig
 
     (** {2 Printing functions}
 
-        {b NB: fractionnal part of timestamps will be lost when printing
+        {b NB: fractional part of timestamps will be lost when printing
          with current implementation.}
 
      *)
