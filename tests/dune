@@ -14,7 +14,7 @@
  (name test)
  (modules test)
  (flags :standard -warn-error -a)
- (libraries unix alcotest ISO8601 stdlib-shims))
+ (libraries unix alcotest ISO8601 duration stdlib-shims))
 
 (alias
  (name runtest)

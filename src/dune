@@ -5,4 +5,5 @@
  (wrapped true)
  (libraries unix stdlib-shims))
 
-(ocamllex ISO8601_lexer)
+(ocamllex ISO8601_lexer duration_lexer)
+(ocamlyacc duration_parser)

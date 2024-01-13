@@ -178,12 +178,65 @@ let rt_fixed_unix_time unix_time tz s () =
 let rt_tests =
   time_tests rt_test @ fixed_time_tests rt_fixed_unix_time
 
+module Tm_struct_duration : Alcotest.TESTABLE with type t = ISO8601.Duration.t = struct
+  open ISO8601.Duration
+  type nonrec t = t
+
+  let pp = pp
+
+  (* do not bother to implement "correct" comparaison of duration
+     also use equality on float *)
+  let equal a b = is_zero a && is_zero b || a = b
+end
+let tm_struct_duration = (module Tm_struct_duration : Alcotest.TESTABLE with type t = ISO8601.Duration.t)
+
+let parse_invalid_duration_test s () =
+  let open ISO8601.Duration in
+  Alcotest.(check bool) ("parse_invalid_duration " ^ s) false (
+    try let _ : t = parse s in true with Parsing.Parse_error | Failure _ -> false);
+  ()
+
+let parse_invalid_duration_tests =
+  let l = ["P1H01M01S"; "P46"; "PT46"; "PT01H46"; "PH1M0S1S"; "1H2M3D"; "AA" ] in
+  List.map (fun s -> s,`Quick, parse_invalid_duration_test s) l
+
+let parse_duration_test (s,d) () =
+  let open ISO8601.Duration in
+  let d2 = parse s in
+  Alcotest.check tm_struct_duration ("parse_duration " ^ s) d d2;
+  let d3 = parse (to_string d2) in
+  Alcotest.check tm_struct_duration ("parse_duration " ^ s) d d3;
+  ()
+
+let parse_duration_tests =
+  let open ISO8601.Duration in
+  let l = [
+       ("PT1H33M", Date {date_zero with hour =1.; minute = 33.})
+      ;("PT1H33S", Date {date_zero with hour=1.; second=33.})
+      ;("PT33M",Date {date_zero with minute=33.})
+      ;("P123456789Y33M450DT33H66M99S",Date {year=123456789.;month=33.;day=450.;hour=33.;minute=66.;second=99.})
+      ;("P0Y0M1DT0H0M0S",Date {date_zero with day=1.})
+      ;("P12W",Week 12.)
+      ;("P90001W",Week 90001.)
+      ;("P0Y",Date date_zero)
+      ;("P0Y0M0DT0H0M0S",Date date_zero)
+      ;("PT0H0M0S",Date date_zero)
+      ;("PT0S",Date date_zero)
+      ;("P0W",Week 0.)
+      ;("P0.3W",Week 0.3)
+      ;("P12.34Y33.66M450.054DT33.66H66.99M99.66S",Date {year=12.34;month=33.66;day=450.054;hour=33.66;minute=66.99;second=99.66})
+      ;("P12,34Y33,66M450,054DT33,66H66,99M99,66S",Date {year=12.34;month=33.66;day=450.054;hour=33.66;minute=66.99;second=99.66})
+  ]
+  in
+  List.map (fun o -> fst o,`Quick, parse_duration_test o) l
+
 let suites = [
   "parse", parse_tests;
   "print", print_tests;
   "rt",    rt_tests;
+  "invalid_duration", parse_invalid_duration_tests;
+  "parse_duration", parse_duration_tests;
 ]
-
 
 let () =
   Alcotest.run "ISO8601" suites

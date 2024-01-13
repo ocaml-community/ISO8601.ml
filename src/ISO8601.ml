@@ -164,3 +164,5 @@ module Permissive = struct
     let string_of_datetimezone_basic = string_of_aux pp_datetimezone_basic
 
 end
+
+module Duration = Duration
