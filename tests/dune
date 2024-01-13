@@ -2,7 +2,7 @@
  (name ISO8601_TEST)
  (modules :standard \ Test)
  (flags :standard -warn-error -a)
- (libraries unix oUnit ISO8601))
+ (libraries unix oUnit ISO8601 stdlib-shims))
 
 (alias
  (name runtest)
@@ -14,7 +14,7 @@
  (name test)
  (modules test)
  (flags :standard -warn-error -a)
- (libraries unix alcotest ISO8601))
+ (libraries unix alcotest ISO8601 stdlib-shims))
 
 (alias
  (name runtest)

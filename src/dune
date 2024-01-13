@@ -3,6 +3,6 @@
  (public_name ISO8601)
  (flags :standard -warn-error -50)
  (wrapped true)
- (libraries unix))
+ (libraries unix stdlib-shims))
 
 (ocamllex ISO8601_lexer)
