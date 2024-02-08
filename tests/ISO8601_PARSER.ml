@@ -4,7 +4,7 @@ let test ~p fn input expected =
   let result = fn input in
   let assert_equal =
     OUnit.assert_equal
-      ~cmp:(OUnit.cmp_float ~epsilon:Pervasives.epsilon_float)
+      ~cmp:(OUnit.cmp_float ~epsilon:Stdlib.epsilon_float)
       ~printer:(fun x -> Printf.sprintf "%.6f (as %s)" x (p x))
   in
   OUnit.(>::) input (fun () -> with_utc (fun () -> assert_equal expected result))

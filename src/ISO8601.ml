@@ -55,7 +55,7 @@ module Permissive = struct
         | Some tz -> gmtime (x +. tz)
       in
       let print_tz_hours fmt tz =
-        fprintf fmt "%0+3d" (Pervasives.truncate (tz /. 3600.))
+        fprintf fmt "%0+3d" (Stdlib.truncate (tz /. 3600.))
       in
       let print_tz_minutes fmt tz =
         fprintf fmt "%02.0f" (mod_float (abs_float (tz /. 60.)) 60.0)
@@ -164,3 +164,5 @@ module Permissive = struct
     let string_of_datetimezone_basic = string_of_aux pp_datetimezone_basic
 
 end
+
+module Duration = Duration

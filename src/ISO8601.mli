@@ -164,3 +164,42 @@ module Permissive : sig
     val string_of_datetimezone_basic : (float * float) -> string
 
 end
+
+module Duration : sig
+
+    type date = Duration_type.date = {
+      year : float;
+      month : float;
+      day : float;
+      hour : float;
+      minute : float;
+      second : float;
+    }
+    (** type for date used to represent duration *)
+
+    type t =
+      | Week of float
+      | Date of date
+          (** type for duration.
+        A duration can be either a number of weeks or a [date] *)
+
+    val date_zero : date
+    (** correspond to date zero (= P0Y0M0DT0H0M0S) *)
+
+    val is_zero : t -> bool
+    (** [is_zero d] is [true] iif [d] correspond to zero *)
+
+    val parse_lex : Lexing.lexbuf -> t
+    (** [parse_lex lexbuf] convert [lexbuf] to [t]. raise exception *)
+
+    val parse : string -> t
+    (** [parse s] convert [s] to [t]. raise exception Failure and Parsing.Parse_error *)
+
+    val pp : Format.formatter -> t -> unit
+    (** [pp fmt d] print [d] to formatter [fmt] in valid duration format:
+        PnYnMnDTnHnMnS or PnW *)
+
+    val to_string : t -> string
+    (** [to_string d] is [d] as a string in valid duration format *)
+
+end
